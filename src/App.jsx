@@ -12,6 +12,7 @@ import LoginView from './components/LoginView.jsx';
 import AuthModal from './components/AuthModal.jsx';
 import AdModal from './components/AdModal.jsx';
 import Toast from './components/Toast.jsx';
+import Footer from './components/Footer.jsx';
 
 import { authService, DEFAULT_USER } from './services/authService.js';
 import { wardrobeService } from './services/wardrobeService.js';
@@ -362,7 +363,14 @@ export default function App({ initialTab = 'dashboard' }) {
         )}
       </main>
 
-      {/* 4. Auth Modal */}
+      {/* 4. Full-Width Footer */}
+      <Footer
+        setActiveTab={setActiveTab}
+        onOpenAdModal={() => setAdModalOpen(true)}
+        user={user}
+      />
+
+      {/* 5. Auth Modal */}
       <AuthModal
         isOpen={authModalOpen}
         onClose={() => setAuthModalOpen(false)}
