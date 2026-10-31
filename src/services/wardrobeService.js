@@ -118,7 +118,7 @@ class WardrobeService {
     return { allowed: true, currentCount, maxCount: 8 };
   }
 
-  addItem(itemData, userPlan = 'FREE') {
+  addItem(itemData, userPlan = 'FREE', userEmail = '') {
     const quotaCheck = this.canAddItem(userPlan);
     if (!quotaCheck.allowed) {
       throw new Error(quotaCheck.reason);
@@ -126,11 +126,13 @@ class WardrobeService {
 
     const newItem = {
       id: 'wd_' + Date.now(),
+      user_email: userEmail || itemData.user_email || '',
       name: itemData.name.trim(),
       category: itemData.category || 'Áo',
       color: itemData.color || 'Trắng',
       notes: (itemData.notes || '').trim(),
       imageUrl: itemData.imageUrl || CURATED_PRESETS[0].imageUrl,
+      image_url: itemData.imageUrl || itemData.image_url || CURATED_PRESETS[0].imageUrl,
       createdAt: new Date().toISOString()
     };
 
@@ -166,12 +168,53 @@ class WardrobeService {
     }
   }
 
+  async fetchUserWardrobe(userEmail) {
+    if (!userEmail) return this.items;
+    try {
+      const res = await fetch(`${BACKEND_BASE_URL}/wardrobe?email=${encodeURIComponent(userEmail)}`);
+      const data = await res.json();
+      if (data.success && Array.isArray(data.items)) {
+        if (data.items.length > 0) {
+          const mapped = data.items.map(it => ({
+            id: it.id,
+            user_email: it.user_email,
+            name: it.name,
+            category: it.category,
+            color: it.color,
+            imageUrl: it.image_url || it.imageUrl,
+            image_url: it.image_url || it.imageUrl,
+            notes: it.notes || '',
+            createdAt: it.created_at || it.createdAt || new Date().toISOString()
+          }));
+          this.items = mapped;
+          this._persist();
+          return mapped;
+        } else if (this.items.length > 0) {
+          // Đồng bộ các món ban đầu của user lên server
+          for (const item of this.items) {
+            await this._syncAddBackend({ ...item, user_email: userEmail });
+          }
+        }
+      }
+    } catch {
+      // Offline fallback
+    }
+    return this.items;
+  }
+
   async _syncAddBackend(item) {
     try {
       await fetch(`${BACKEND_BASE_URL}/wardrobe`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(item)
+        body: JSON.stringify({
+          id: item.id,
+          user_email: item.user_email,
+          name: item.name,
+          category: item.category,
+          color: item.color,
+          image_url: item.imageUrl || item.image_url
+        })
       });
     } catch {
       // Backend có thể offline, frontend lưu persistent

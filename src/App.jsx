@@ -74,20 +74,33 @@ export default function App({ initialTab = 'dashboard' }) {
     }
   }, [toast]);
 
+  // Tự động tải tủ đồ đồng bộ từ server khi user đăng nhập hoặc đổi tài khoản
+  useEffect(() => {
+    if (user?.email) {
+      wardrobeService.fetchUserWardrobe(user.email).then(items => {
+        setWardrobe([...items]);
+      });
+    }
+  }, [user?.email]);
+
   // ==========================================
   // ACTIONS: USER PROFILE & AUTH
   // ==========================================
-  const handleLogin = (name, email, additional) => {
+  const handleLogin = async (name, email, additional) => {
     const newUser = authService.login(name, email, additional);
     setUser(newUser);
+    const syncedItems = await wardrobeService.fetchUserWardrobe(newUser.email);
+    setWardrobe([...syncedItems]);
     setActiveTab('dashboard');
     triggerToast(`👋 Chào mừng bạn, ${newUser.name}!`);
   };
 
-  const handleDemoLogin = () => {
+  const handleDemoLogin = async () => {
     const demoUser = authService.login(DEFAULT_USER.name, DEFAULT_USER.email, DEFAULT_USER);
     setUser(demoUser);
     setWaterConsumed(demoUser.waterConsumedMl);
+    const syncedItems = await wardrobeService.fetchUserWardrobe(demoUser.email);
+    setWardrobe([...syncedItems]);
     setActiveTab('dashboard');
     triggerToast('⚡ Đã đăng nhập nhanh với tài khoản mẫu thiết lập sẵn!');
   };
@@ -118,7 +131,7 @@ export default function App({ initialTab = 'dashboard' }) {
   // ==========================================
   const handleAddItem = (itemData) => {
     try {
-      wardrobeService.addItem(itemData, user?.plan);
+      wardrobeService.addItem(itemData, user?.plan, user?.email);
       setWardrobe([...wardrobeService.getAllItems()]);
       triggerToast('✨ Đã thêm trang phục mới vào tủ đồ thành công!');
     } catch (err) {
