@@ -9,6 +9,7 @@ import {
   ACTIVITY_LEVELS,
   HEALTH_GOALS
 } from '../services/metricsService.js';
+import { VIETNAM_CITIES } from '../services/cityWeatherService.js';
 
 export default function ProfileView({
   user,
@@ -20,6 +21,7 @@ export default function ProfileView({
   // Local form state initialized with current user
   const [name, setName] = useState(user?.name || 'Mai Linh');
   const [email, setEmail] = useState(user?.email || 'mailinh.lifestyle@gmail.com');
+  const [city, setCity] = useState(user?.city || 'Hà Nội');
   const [gender, setGender] = useState(user?.gender || 'Nữ');
   const [age, setAge] = useState(user?.age || 24);
   const [height, setHeight] = useState(user?.height || 163);
@@ -32,6 +34,7 @@ export default function ProfileView({
     if (user) {
       setName(user.name || '');
       setEmail(user.email || '');
+      setCity(user.city || 'Hà Nội');
       setGender(user.gender || 'Nữ');
       setAge(user.age || 24);
       setHeight(user.height || 163);
@@ -56,6 +59,7 @@ export default function ProfileView({
     onUpdateProfile({
       name: name.trim(),
       email: email.trim(),
+      city: city.trim(),
       gender,
       age: Number(age),
       height: Number(height),
@@ -63,7 +67,7 @@ export default function ProfileView({
       activityLevel,
       healthGoal
     });
-    onTriggerToast?.('✅ Đã lưu cài đặt hồ sơ và cập nhật lại chỉ số TDEE/BMI!');
+    onTriggerToast?.('✅ Đã lưu cài đặt hồ sơ và cập nhật thông tin khu vực/thời tiết!');
   };
 
   return (
@@ -130,6 +134,29 @@ export default function ProfileView({
                     required
                   />
                 </div>
+              </div>
+
+              {/* Nơi ở hiện tại (Dùng để kiểm tra thời tiết) */}
+              <div className="form-field">
+                <label className="field-label">
+                  Tỉnh / Thành phố đang sinh sống
+                  <span className="hint-pill">Dự báo thời tiết & Gợi ý trang phục</span>
+                </label>
+                <input
+                  type="text"
+                  list="vietnam-cities-list"
+                  className="field-input"
+                  placeholder="Ví dụ: Hà Nội, TP. Hồ Chí Minh, Đà Nẵng, Đà Lạt..."
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  required
+                />
+                <datalist id="vietnam-cities-list">
+                  {VIETNAM_CITIES.map(c => (
+                    <option key={c.id} value={c.name} />
+                  ))}
+                </datalist>
+                <span className="field-hint-micro">💡 Wearwell sẽ đối chiếu thời tiết tại khu vực này để AI gợi ý bản phối phù hợp nhất</span>
               </div>
 
               {/* Giới tính & Tuổi */}

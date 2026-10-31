@@ -10,6 +10,7 @@ export const DEFAULT_USER = {
   id: 'usr_demo_01',
   name: 'Mai Linh',
   email: 'mailinh.lifestyle@gmail.com',
+  city: 'Hà Nội',
   gender: 'Nữ',
   age: 24,
   height: 163,
@@ -18,7 +19,8 @@ export const DEFAULT_USER = {
   healthGoal: 'fat_loss',     // 'fat_loss' | 'maintain' | 'muscle_gain'
   dietPreference: 'Eat Clean',
   plan: 'FREE', // 'FREE' | 'PRO'
-  aiUsageCount: 1, // Đã dùng 1/3 lượt mẫu
+  aiUsageCount: 1, // Đã dùng 1 lượt ban đầu
+  adRewardCount: 0, // Đã xem bao nhiêu quảng cáo hôm nay (tối đa 3 lần)
   lastUsageDate: new Date().toISOString().slice(0, 10),
   waterConsumedMl: 1500,
   caloriesConsumed: 1250,
@@ -43,6 +45,7 @@ class AuthService {
       const today = new Date().toISOString().slice(0, 10);
       if (parsed.lastUsageDate !== today) {
         parsed.aiUsageCount = 0;
+        parsed.adRewardCount = 0;
         parsed.lastUsageDate = today;
         localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(parsed));
       }
@@ -81,8 +84,10 @@ class AuthService {
       id: 'usr_' + Date.now(),
       name: name.trim(),
       email: email.trim().toLowerCase(),
+      city: additionalData.city || 'Hà Nội',
       lastUsageDate: today,
       aiUsageCount: 0,
+      adRewardCount: 0,
       ...additionalData
     };
     return this.saveUser(newUser);
@@ -97,17 +102,19 @@ class AuthService {
 
   /**
    * Kiểm tra và trừ lượt dùng AI (Server-side & Local)
+   * Mỗi tài khoản có 3 lượt khởi đầu. Khi hết 3 lượt, có thể xem quảng cáo (tối đa 3 lần/ngày) để nhận thêm từng lượt.
    */
   canUseAI() {
     if (!this.user) return false;
     if (this.user.plan === 'PRO') return true;
-    return (this.user.aiUsageCount || 0) < 3;
+    const maxQuota = 3 + (this.user.adRewardCount || 0);
+    return (this.user.aiUsageCount || 0) < maxQuota;
   }
 
   consumeAIQuota() {
     if (!this.user) return false;
     if (this.user.plan === 'PRO') return true;
-    if (this.user.aiUsageCount >= 3) return false;
+    if (!this.canUseAI()) return false;
 
     const updated = {
       ...this.user,
@@ -120,7 +127,31 @@ class AuthService {
   getRemainingAIQuota() {
     if (!this.user) return 0;
     if (this.user.plan === 'PRO') return Infinity;
-    return Math.max(0, 3 - (this.user.aiUsageCount || 0));
+    const maxQuota = 3 + (this.user.adRewardCount || 0);
+    return Math.max(0, maxQuota - (this.user.aiUsageCount || 0));
+  }
+
+  canWatchAd() {
+    if (!this.user || this.user.plan === 'PRO') return false;
+    return (this.user.adRewardCount || 0) < 3;
+  }
+
+  getRemainingAdsCount() {
+    if (!this.user || this.user.plan === 'PRO') return 0;
+    return Math.max(0, 3 - (this.user.adRewardCount || 0));
+  }
+
+  /**
+   * Xem quảng cáo thành công -> cộng thêm 1 lượt AI (tối đa 3 lần/ngày)
+   */
+  rewardAdWatch() {
+    if (!this.user || !this.canWatchAd()) return false;
+    const updated = {
+      ...this.user,
+      adRewardCount: (this.user.adRewardCount || 0) + 1
+    };
+    this.saveUser(updated);
+    return true;
   }
 
   /**

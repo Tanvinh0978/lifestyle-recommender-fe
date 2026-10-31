@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { NUTRITION_GOALS, DIET_PREFERENCES, WORKOUT_TIMES } from '../services/aiService.js';
+import ProAIChatBox from './ProAIChatBox.jsx';
 
 export default function NutritionFitnessView({
   user,
@@ -7,22 +8,30 @@ export default function NutritionFitnessView({
   planResult,
   isLoading,
   onNavigatePricing,
+  onOpenAdModal,
+  remainingAds = 3,
   onTriggerToast
 }) {
   const [selectedGoal, setSelectedGoal] = useState(NUTRITION_GOALS[0]);
   const [selectedDiet, setSelectedDiet] = useState(DIET_PREFERENCES[1]); // Eat Clean
   const [selectedDuration, setSelectedDuration] = useState(30);
+  const [activeTabMode, setActiveTabMode] = useState('config'); // 'config' | 'chatbox'
   
   // Interactive workout completion checkboxes
   const [completedExercises, setCompletedExercises] = useState({});
 
   const isPro = user?.plan === 'PRO';
-  const remainingQuota = isPro ? Infinity : Math.max(0, 3 - (user?.aiUsageCount || 0));
+  const remainingQuota = isPro ? Infinity : Math.max(0, (3 + (user?.adRewardCount || 0)) - (user?.aiUsageCount || 0));
 
   const handleGenerateClick = () => {
     if (!isPro && remainingQuota <= 0) {
-      onTriggerToast?.('🔒 Bạn đã dùng hết lượt AI hôm nay! Nâng cấp PRO VIP để lên thực đơn & lịch tập không giới hạn.', 'warning');
-      onNavigatePricing?.();
+      if (remainingAds > 0) {
+        onTriggerToast?.('📺 Bạn đã dùng hết lượt khởi đầu! Hãy xem 1 quảng cáo ngắn để nhận thêm lượt thực đơn/bài tập miễn phí.', 'info');
+        onOpenAdModal?.();
+      } else {
+        onTriggerToast?.('🔒 Bạn đã đạt tối đa 3 lượt quảng cáo hôm nay! Nâng cấp PRO VIP để tạo thực đơn & bài tập không giới hạn.', 'warning');
+        onNavigatePricing?.();
+      }
       return;
     }
 
@@ -65,20 +74,60 @@ export default function NutritionFitnessView({
         <div>
           <h1 className="page-main-title">Dinh dưỡng & Tập luyện AI</h1>
           <p className="page-sub-title">
-            Thiết kế thực đơn 4 bữa chuẩn khẩu vị Việt kết hợp giáo án thể hình tại nhà, bám sát chỉ số TDEE và mục tiêu vóc dáng của bạn.
+            Thiết kế thực đơn 4 bữa chuẩn khẩu vị Việt kết hợp giáo án thể hình tại nhà, bám sát chỉ số TDEE và thể trạng tại <strong>{user?.city || 'Hà Nội'}</strong>.
           </p>
         </div>
 
-        <div className="quota-pill-status">
-          <span className="lightning-icon">⚡</span>
-          <span>Hạn mức hôm nay: <strong>{isPro ? 'Vô hạn (PRO VIP)' : `Còn ${remainingQuota} / 3 lượt`}</strong></span>
+        <div className="header-status-actions">
+          <div className="quota-pill-status">
+            <span className="lightning-icon">⚡</span>
+            <span>Hạn mức hôm nay: <strong>{isPro ? 'Vô hạn (PRO VIP)' : `Còn ${remainingQuota} lượt`}</strong></span>
+          </div>
+
+          {!isPro && remainingAds > 0 && (
+            <button
+              type="button"
+              className="btn-watch-ad-pill"
+              onClick={onOpenAdModal}
+              title="Xem quảng cáo 5s nhận thêm 1 lượt AI"
+            >
+              <span>📺</span>
+              <span>Xem QC (+1 lượt)</span>
+            </button>
+          )}
         </div>
       </div>
 
-      {/* ========================================================= */}
-      {/* 2. CONFIGURATOR CARD (GOAL, DIET, TIME)                   */}
-      {/* ========================================================= */}
-      <div className="fitness-config-card-glass">
+      {/* VIP Mode Switcher (Chỉ hiển thị khi là thành viên PRO VIP) */}
+      {isPro && (
+        <div className="vip-tabs-switcher">
+          <button
+            type="button"
+            className={`vip-tab-toggle-btn ${activeTabMode === 'config' ? 'active' : ''}`}
+            onClick={() => setActiveTabMode('config')}
+          >
+            <span>🥗 Thiết kế thực đơn tự động</span>
+          </button>
+          <button
+            type="button"
+            className={`vip-tab-toggle-btn ${activeTabMode === 'chatbox' ? 'active' : ''}`}
+            onClick={() => setActiveTabMode('chatbox')}
+          >
+            <span className="sparkle-gold">👑</span>
+            <span>Chatbox AI Nutrition & PT Trực Tiếp</span>
+          </button>
+        </div>
+      )}
+
+      {/* HIỂN THỊ CHATBOX KHI CHỌN MODE CHATBOX Ở BẢN PRO */}
+      {isPro && activeTabMode === 'chatbox' ? (
+        <ProAIChatBox user={user} onTriggerToast={onTriggerToast} initialContext="nutrition" />
+      ) : (
+        <>
+          {/* ========================================================= */}
+          {/* 2. CONFIGURATOR CARD (GOAL, DIET, TIME)                   */}
+          {/* ========================================================= */}
+          <div className="fitness-config-card-glass">
         <div className="config-header">
           <div className="config-title-group">
             <span className="config-icon">🥗</span>
@@ -349,6 +398,8 @@ export default function NutritionFitnessView({
             </div>
           </div>
         </div>
+      )}
+      </>
       )}
     </div>
   );

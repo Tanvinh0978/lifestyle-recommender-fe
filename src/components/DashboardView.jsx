@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { getCityWeather } from '../services/cityWeatherService.js';
 
 export default function DashboardView({
   user,
@@ -9,10 +10,14 @@ export default function DashboardView({
   waterTarget = 2200,
   dailyCalorieTarget = 1820,
   caloriesConsumed = 1450,
+  onOpenAdModal,
+  remainingAds = 3,
   onTriggerToast
 }) {
   const [isOutfitSaved, setIsOutfitSaved] = useState(false);
   const [isOutfitLiked, setIsOutfitLiked] = useState(false);
+
+  const cityWeather = getCityWeather(user?.city || 'Hà Nội');
 
   const isPro = user?.plan === 'PRO';
   const aiUsed = user?.aiUsageCount || 0;
@@ -49,15 +54,15 @@ export default function DashboardView({
               <span className="sparkle-icon">✨</span>
             </h1>
             <p className="greeting-subtitle">
-              Trời thu dịu mát, nắng nhẹ — hoàn hảo cho một ngày tràn đầy cảm hứng và năng lượng tích cực!
+              {cityWeather.desc} tại <strong>{user?.city || 'Hà Nội'}</strong> — hoàn hảo cho một ngày tràn đầy cảm hứng và năng lượng tích cực!
             </p>
           </div>
 
-          <div className="weather-pill-badge">
-            <span className="weather-icon">🌤️</span>
+          <div className="weather-pill-badge" onClick={() => onNavigate('profile')} title="Bấm để đổi thành phố nơi bạn ở">
+            <span className="weather-icon">{cityWeather.icon}</span>
             <div className="weather-text">
-              <span className="weather-temp">Hà Nội 24°C</span>
-              <span className="weather-desc">Dịu mát</span>
+              <span className="weather-temp">{cityWeather.name} {cityWeather.temp}</span>
+              <span className="weather-desc">{cityWeather.weather} (Đổi vị trí ✎)</span>
             </div>
           </div>
         </div>
@@ -82,12 +87,12 @@ export default function DashboardView({
               <div className="quota-info-item">
                 <div className="quota-labels">
                   <span>Lượt gọi Stylist & Fitness AI:</span>
-                  <strong>{aiUsed} / 3 lượt</strong>
+                  <strong>{aiUsed} / {3 + (user?.adRewardCount || 0)} lượt ({remainingAds} lượt QC còn lại)</strong>
                 </div>
                 <div className="progress-track-mini">
                   <div
                     className="progress-fill-purple"
-                    style={{ width: `${Math.min(100, (aiUsed / 3) * 100)}%` }}
+                    style={{ width: `${Math.min(100, (aiUsed / (3 + (user?.adRewardCount || 0))) * 100)}%` }}
                   ></div>
                 </div>
               </div>
@@ -106,22 +111,35 @@ export default function DashboardView({
               </div>
             </div>
 
-            <button
-              className="btn-banner-upgrade-pro"
-              onClick={() => onNavigate('pricing')}
-            >
-              <div className="btn-upgrade-left">
-                <span className="crown-icon">👑</span>
-                <span className="btn-upgrade-text">
-                  Nâng cấp PRO VIP chỉ 49.000đ/tháng
-                </span>
-              </div>
-              <div className="btn-upgrade-right">
-                <span>Mở khóa không giới hạn</span>
-                <span className="arrow-icon">→</span>
-              </div>
-              <div className="shimmer-effect"></div>
-            </button>
+            <div className="banner-dual-actions">
+              <button
+                className="btn-banner-upgrade-pro"
+                onClick={() => onNavigate('pricing')}
+              >
+                <div className="btn-upgrade-left">
+                  <span className="crown-icon">👑</span>
+                  <span className="btn-upgrade-text">
+                    Nâng cấp PRO VIP chỉ 49.000đ/tháng
+                  </span>
+                </div>
+                <div className="btn-upgrade-right">
+                  <span>Mở khóa không giới hạn</span>
+                  <span className="arrow-icon">→</span>
+                </div>
+                <div className="shimmer-effect"></div>
+              </button>
+
+              {remainingAds > 0 && (
+                <button
+                  type="button"
+                  className="btn-banner-watch-ad"
+                  onClick={onOpenAdModal}
+                  title="Xem quảng cáo ngắn 5s nhận thêm 1 lượt AI"
+                >
+                  <span>📺 Xem quảng cáo (+1 lượt AI miễn phí)</span>
+                </button>
+              )}
+            </div>
           </div>
         </section>
       ) : (

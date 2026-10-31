@@ -402,33 +402,47 @@ export default function WardrobeView({
                 />
               </div>
 
-              {/* Phân loại & Màu sắc */}
+              {/* Phân loại & Màu sắc (Nhập tự do kết hợp gợi ý datalist) */}
               <div className="form-row-2col">
                 <div className="form-field">
-                  <label className="form-label">Phân loại</label>
-                  <select
-                    className="form-select-input"
+                  <label className="form-label">Phân loại trang phục <span className="req">*</span></label>
+                  <input
+                    type="text"
+                    list="wardrobe-categories-list"
+                    className="form-text-input"
+                    placeholder="Ví dụ: Áo, Quần âu, Váy dạ hội, Giày..."
                     value={formCategory}
                     onChange={e => setFormCategory(e.target.value)}
-                  >
-                    <option value="Áo">Áo (Tops)</option>
-                    <option value="Quần/Váy">Quần & Váy (Bottoms)</option>
-                    <option value="Giày dép">Giày dép (Shoes)</option>
-                    <option value="Phụ kiện">Phụ kiện (Accessories)</option>
-                  </select>
+                    required
+                  />
+                  <datalist id="wardrobe-categories-list">
+                    <option value="Áo" />
+                    <option value="Quần/Váy" />
+                    <option value="Giày dép" />
+                    <option value="Phụ kiện" />
+                    <option value="Áo khoác" />
+                    <option value="Váy liền thân" />
+                  </datalist>
+                  <span className="field-hint-micro">💡 Bạn có thể tự gõ loại trang phục bất kỳ</span>
                 </div>
 
                 <div className="form-field">
-                  <label className="form-label">Màu sắc chủ đạo</label>
-                  <select
-                    className="form-select-input"
+                  <label className="form-label">Màu sắc chủ đạo <span className="req">*</span></label>
+                  <input
+                    type="text"
+                    list="wardrobe-colors-list"
+                    className="form-text-input"
+                    placeholder="Ví dụ: Trắng, Đen, Be sữa, Tím pastel..."
                     value={formColor}
                     onChange={e => setFormColor(e.target.value)}
-                  >
+                    required
+                  />
+                  <datalist id="wardrobe-colors-list">
                     {POPULAR_COLORS.map(c => (
-                      <option key={c.name} value={c.name}>{c.name}</option>
+                      <option key={c.name} value={c.name} />
                     ))}
-                  </select>
+                  </datalist>
+                  <span className="field-hint-micro">💡 Tự do nhập màu sắc theo ý bạn</span>
                 </div>
               </div>
 

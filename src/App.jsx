@@ -10,6 +10,7 @@ import ProfileView from './components/ProfileView.jsx';
 import PricingView from './components/PricingView.jsx';
 import LoginView from './components/LoginView.jsx';
 import AuthModal from './components/AuthModal.jsx';
+import AdModal from './components/AdModal.jsx';
 import Toast from './components/Toast.jsx';
 
 import { authService, DEFAULT_USER } from './services/authService.js';
@@ -25,6 +26,7 @@ export default function App({ initialTab = 'dashboard' }) {
   // ==========================================
   const [user, setUser] = useState(() => authService.getCurrentUser());
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [adModalOpen, setAdModalOpen] = useState(false);
   const [toast, setToast] = useState(null);
 
   // ==========================================
@@ -165,6 +167,17 @@ export default function App({ initialTab = 'dashboard' }) {
   };
 
   // ==========================================
+  // ACTIONS: AD REWARD
+  // ==========================================
+  const handleRewardAdComplete = () => {
+    const success = authService.rewardAdWatch();
+    if (success) {
+      setUser({ ...authService.getCurrentUser() });
+      triggerToast('🎉 Bạn đã nhận thêm +1 lượt gọi AI miễn phí hôm nay!');
+    }
+  };
+
+  // ==========================================
   // ACTIONS: AI GENERATION
   // ==========================================
   const handleGenerateOutfit = async (options) => {
@@ -175,8 +188,13 @@ export default function App({ initialTab = 'dashboard' }) {
     }
 
     if (!authService.canUseAI()) {
-      triggerToast('🔒 Bạn đã dùng hết 3 lượt AI miễn phí hôm nay! Nâng cấp PRO VIP để sử dụng không giới hạn.', 'warning');
-      setActiveTab('pricing');
+      if (authService.canWatchAd()) {
+        triggerToast('📺 Bạn đã dùng hết lượt khởi đầu hôm nay. Xem 1 quảng cáo ngắn để nhận thêm lượt!', 'info');
+        setAdModalOpen(true);
+      } else {
+        triggerToast('🔒 Bạn đã đạt giới hạn quảng cáo hôm nay! Nâng cấp PRO VIP để sử dụng không giới hạn.', 'warning');
+        setActiveTab('pricing');
+      }
       return;
     }
 
@@ -202,8 +220,13 @@ export default function App({ initialTab = 'dashboard' }) {
     }
 
     if (!authService.canUseAI()) {
-      triggerToast('🔒 Bạn đã dùng hết lượt AI miễn phí hôm nay! Nâng cấp PRO VIP để tạo thực đơn không giới hạn.', 'warning');
-      setActiveTab('pricing');
+      if (authService.canWatchAd()) {
+        triggerToast('📺 Bạn đã dùng hết lượt khởi đầu hôm nay. Xem 1 quảng cáo ngắn để nhận thêm lượt!', 'info');
+        setAdModalOpen(true);
+      } else {
+        triggerToast('🔒 Bạn đã đạt giới hạn quảng cáo hôm nay! Nâng cấp PRO VIP để tạo thực đơn không giới hạn.', 'warning');
+        setActiveTab('pricing');
+      }
       return;
     }
 
@@ -275,6 +298,8 @@ export default function App({ initialTab = 'dashboard' }) {
             waterTarget={currentWaterTarget}
             dailyCalorieTarget={currentCalorieTarget}
             caloriesConsumed={user?.caloriesConsumed || 1450}
+            onOpenAdModal={() => setAdModalOpen(true)}
+            remainingAds={authService.getRemainingAdsCount()}
             onTriggerToast={triggerToast}
           />
         )}
@@ -299,6 +324,8 @@ export default function App({ initialTab = 'dashboard' }) {
             outfitResult={stylistResult}
             isLoading={stylistLoading}
             onNavigatePricing={() => setActiveTab('pricing')}
+            onOpenAdModal={() => setAdModalOpen(true)}
+            remainingAds={authService.getRemainingAdsCount()}
             onTriggerToast={triggerToast}
           />
         )}
@@ -310,6 +337,8 @@ export default function App({ initialTab = 'dashboard' }) {
             planResult={fitnessResult}
             isLoading={fitnessLoading}
             onNavigatePricing={() => setActiveTab('pricing')}
+            onOpenAdModal={() => setAdModalOpen(true)}
+            remainingAds={authService.getRemainingAdsCount()}
             onTriggerToast={triggerToast}
           />
         )}
@@ -339,6 +368,14 @@ export default function App({ initialTab = 'dashboard' }) {
         onClose={() => setAuthModalOpen(false)}
         onLogin={handleLogin}
         onDemoLogin={handleDemoLogin}
+      />
+
+      {/* 5. Watch Ad Modal (Xem QC nhận thêm lượt AI) */}
+      <AdModal
+        isOpen={adModalOpen}
+        onClose={() => setAdModalOpen(false)}
+        onRewardComplete={handleRewardAdComplete}
+        remainingAdsToday={authService.getRemainingAdsCount()}
       />
     </div>
   );

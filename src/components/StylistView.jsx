@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { STYLIST_OCCASIONS, STYLIST_WEATHERS } from '../services/aiService.js';
+import ProAIChatBox from './ProAIChatBox.jsx';
 
 export default function StylistView({
   user,
@@ -8,20 +9,28 @@ export default function StylistView({
   outfitResult,
   isLoading,
   onNavigatePricing,
+  onOpenAdModal,
+  remainingAds = 3,
   onTriggerToast
 }) {
   const [selectedOccasion, setSelectedOccasion] = useState(STYLIST_OCCASIONS[0]);
   const [selectedWeather, setSelectedWeather] = useState(STYLIST_WEATHERS[1]); // Dịu mát
   const [prioritizeWardrobe, setPrioritizeWardrobe] = useState(true);
   const [isOutfitSaved, setIsOutfitSaved] = useState(false);
+  const [activeTabMode, setActiveTabMode] = useState('config'); // 'config' | 'chatbox'
 
   const isPro = user?.plan === 'PRO';
-  const remainingQuota = isPro ? Infinity : Math.max(0, 3 - (user?.aiUsageCount || 0));
+  const remainingQuota = isPro ? Infinity : Math.max(0, (3 + (user?.adRewardCount || 0)) - (user?.aiUsageCount || 0));
 
   const handleGenerateClick = () => {
     if (!isPro && remainingQuota <= 0) {
-      onTriggerToast?.('🔒 Bạn đã dùng hết 3 lượt Stylist AI miễn phí hôm nay! Nâng cấp PRO VIP để sử dụng không giới hạn.', 'warning');
-      onNavigatePricing?.();
+      if (remainingAds > 0) {
+        onTriggerToast?.('📺 Bạn đã dùng hết lượt khởi đầu! Hãy xem 1 quảng cáo ngắn để nhận thêm lượt miễn phí.', 'info');
+        onOpenAdModal?.();
+      } else {
+        onTriggerToast?.('🔒 Bạn đã đạt tối đa 3 lượt quảng cáo hôm nay! Nâng cấp PRO VIP để phối đồ không giới hạn.', 'warning');
+        onNavigatePricing?.();
+      }
       return;
     }
 
@@ -59,20 +68,60 @@ export default function StylistView({
         <div>
           <h1 className="page-main-title">Stylist AI Phối đồ</h1>
           <p className="page-sub-title">
-            Trợ lý thời trang cá nhân AI phân tích vóc dáng, thời tiết và ngữ cảnh để tạo nên bản phối hài hòa nhất từ chính tủ đồ của bạn.
+            Trợ lý thời trang cá nhân AI phân tích vóc dáng, thời tiết tại <strong>{user?.city || 'Hà Nội'}</strong> để tạo nên bản phối hài hòa nhất từ chính tủ đồ của bạn.
           </p>
         </div>
 
-        <div className="quota-pill-status">
-          <span className="lightning-icon">⚡</span>
-          <span>Hạn mức hôm nay: <strong>{isPro ? 'Vô hạn (PRO VIP)' : `Còn ${remainingQuota} / 3 lượt`}</strong></span>
+        <div className="header-status-actions">
+          <div className="quota-pill-status">
+            <span className="lightning-icon">⚡</span>
+            <span>Hạn mức hôm nay: <strong>{isPro ? 'Vô hạn (PRO VIP)' : `Còn ${remainingQuota} lượt`}</strong></span>
+          </div>
+
+          {!isPro && remainingAds > 0 && (
+            <button
+              type="button"
+              className="btn-watch-ad-pill"
+              onClick={onOpenAdModal}
+              title="Xem quảng cáo 5s nhận thêm 1 lượt AI"
+            >
+              <span>📺</span>
+              <span>Xem QC (+1 lượt)</span>
+            </button>
+          )}
         </div>
       </div>
 
-      {/* ========================================================= */}
-      {/* 2. CONFIGURATOR CARD (OCCASIONS, WEATHER, TOGGLE)         */}
-      {/* ========================================================= */}
-      <div className="stylist-config-card-glass">
+      {/* VIP Mode Switcher (Chỉ hiển thị khi là thành viên PRO VIP) */}
+      {isPro && (
+        <div className="vip-tabs-switcher">
+          <button
+            type="button"
+            className={`vip-tab-toggle-btn ${activeTabMode === 'config' ? 'active' : ''}`}
+            onClick={() => setActiveTabMode('config')}
+          >
+            <span>🪄 Phối đồ tự động</span>
+          </button>
+          <button
+            type="button"
+            className={`vip-tab-toggle-btn ${activeTabMode === 'chatbox' ? 'active' : ''}`}
+            onClick={() => setActiveTabMode('chatbox')}
+          >
+            <span className="sparkle-gold">👑</span>
+            <span>Chatbox AI Stylist Trực Tiếp</span>
+          </button>
+        </div>
+      )}
+
+      {/* HIỂN THỊ CHATBOX KHI CHỌN MODE CHATBOX Ở BẢN PRO */}
+      {isPro && activeTabMode === 'chatbox' ? (
+        <ProAIChatBox user={user} wardrobe={wardrobe} onTriggerToast={onTriggerToast} initialContext="fashion" />
+      ) : (
+        <>
+          {/* ========================================================= */}
+          {/* 2. CONFIGURATOR CARD (OCCASIONS, WEATHER, TOGGLE)         */}
+          {/* ========================================================= */}
+          <div className="stylist-config-card-glass">
         <div className="config-header">
           <div className="config-title-group">
             <span className="config-icon">🪄</span>
@@ -333,6 +382,8 @@ export default function StylistView({
             </button>
           </div>
         </article>
+      )}
+      </>
       )}
     </div>
   );

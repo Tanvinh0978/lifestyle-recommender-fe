@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { VIETNAM_CITIES } from '../services/cityWeatherService.js';
 
 export default function LoginView({ onLogin, onDemoLogin, onBackToHome, onTriggerToast }) {
   const [isRegisterMode, setIsRegisterMode] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [city, setCity] = useState('Hà Nội');
   const [password, setPassword] = useState('');
   const [gender, setGender] = useState('Nữ');
   const [height, setHeight] = useState(163);
@@ -20,6 +22,7 @@ export default function LoginView({ onLogin, onDemoLogin, onBackToHome, onTrigge
     const finalName = name.trim() || (isRegisterMode ? 'Người dùng mới' : email.split('@')[0]);
 
     onLogin(finalName, email.trim(), {
+      city: city.trim() || 'Hà Nội',
       gender,
       height: Number(height),
       weight: Number(weight),
@@ -271,6 +274,24 @@ export default function LoginView({ onLogin, onDemoLogin, onBackToHome, onTrigge
                         onChange={e => setWeight(Number(e.target.value))}
                       />
                     </div>
+                  </div>
+
+                  <div className="auth-input-group">
+                    <label className="auth-input-label">Tỉnh / Thành phố đang ở (Dự báo thời tiết)</label>
+                    <input
+                      type="text"
+                      list="login-cities-list"
+                      className="auth-text-field"
+                      placeholder="Ví dụ: Hà Nội, TP. Hồ Chí Minh, Đà Nẵng..."
+                      value={city}
+                      onChange={e => setCity(e.target.value)}
+                      required
+                    />
+                    <datalist id="login-cities-list">
+                      {VIETNAM_CITIES.map(c => (
+                        <option key={c.id} value={c.name} />
+                      ))}
+                    </datalist>
                   </div>
 
                   <div className="auth-input-group">
