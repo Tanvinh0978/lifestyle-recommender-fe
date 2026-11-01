@@ -1,7 +1,40 @@
 import React, { useState } from 'react';
 import { VIETNAM_CITIES } from '../services/cityWeatherService.js';
 
-export default function LoginView({ onLogin, onDemoLogin, onBackToHome, onTriggerToast }) {
+export const DEMO_PRESET_ACCOUNTS = [
+  {
+    name: 'Mai Linh',
+    email: 'mailinh.lifestyle@gmail.com',
+    city: 'Hà Nội',
+    gender: 'Nữ',
+    height: 163,
+    weight: 51,
+    healthGoal: 'fat_loss',
+    desc: 'Nữ, 51kg • Hà Nội'
+  },
+  {
+    name: 'Nguyễn Văn An',
+    email: 'an.nguyen@gmail.com',
+    city: 'Hà Nội',
+    gender: 'Nam',
+    height: 175,
+    weight: 68,
+    healthGoal: 'muscle_gain',
+    desc: 'Nam, 68kg • Hà Nội'
+  },
+  {
+    name: 'Lê Hoàng Yến',
+    email: 'hoangyen.le@gmail.com',
+    city: 'Đà Nẵng',
+    gender: 'Nữ',
+    height: 160,
+    weight: 48,
+    healthGoal: 'fat_loss',
+    desc: 'Nữ, 48kg • Đà Nẵng'
+  }
+];
+
+export default function LoginView({ onLogin, onDemoLogin, onBackToHome, onTriggerToast, currentUser }) {
   const [isRegisterMode, setIsRegisterMode] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -30,8 +63,14 @@ export default function LoginView({ onLogin, onDemoLogin, onBackToHome, onTrigge
     });
   };
 
-  const handleDemoClick = () => {
-    onDemoLogin();
+  const handleSelectPreset = (acc) => {
+    onLogin(acc.name, acc.email, {
+      city: acc.city,
+      gender: acc.gender,
+      height: acc.height,
+      weight: acc.weight,
+      healthGoal: acc.healthGoal
+    });
   };
 
   return (
@@ -156,17 +195,23 @@ export default function LoginView({ onLogin, onDemoLogin, onBackToHome, onTrigge
               <div className="demo-left-side">
                 <span className="demo-lightning-icon">⚡</span>
                 <div>
-                  <strong>Trải nghiệm nhanh (Khuyến nghị)</strong>
-                  <p>Vào ngay với tài khoản mẫu (Mai Linh, 51kg, tủ đồ 6 món)</p>
+                  <strong>Đăng nhập 1 chạm với tài khoản mẫu</strong>
+                  <p>Chọn nhanh tài khoản có sẵn để trải nghiệm ngay:</p>
                 </div>
               </div>
-              <button
-                type="button"
-                className="btn-quick-demo-action"
-                onClick={handleDemoClick}
-              >
-                Vào ngay →
-              </button>
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '10px' }}>
+                {DEMO_PRESET_ACCOUNTS.map(acc => (
+                  <button
+                    key={acc.email}
+                    type="button"
+                    className="btn-quick-demo-action"
+                    style={{ fontSize: '0.8rem', padding: '6px 12px' }}
+                    onClick={() => handleSelectPreset(acc)}
+                  >
+                    👤 {acc.name} ({acc.gender}) →
+                  </button>
+                ))}
+              </div>
             </div>
 
             <div className="login-separator-line">

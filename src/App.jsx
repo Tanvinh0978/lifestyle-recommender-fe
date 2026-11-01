@@ -34,7 +34,20 @@ export default function App({ initialTab = 'dashboard' }) {
   // STATE: NAVIGATION
   // ==========================================
   // 'dashboard' | 'wardrobe' | 'stylist' | 'nutrition-fitness' | 'profile' | 'pricing' | 'login'
-  const [activeTab, setActiveTab] = useState(initialTab);
+  const [activeTab, setActiveTab] = useState(() => {
+    const currentUser = authService.getCurrentUser();
+    if (!currentUser) return 'login';
+    return initialTab;
+  });
+
+  const handleNavigate = (tab) => {
+    if (!user && tab !== 'login') {
+      setActiveTab('login');
+      triggerToast('🔒 Vui lòng đăng nhập để sử dụng tính năng này.', 'warning');
+      return;
+    }
+    setActiveTab(tab);
+  };
 
   // ==========================================
   // STATE: DIGITAL WARDROBE
@@ -112,7 +125,8 @@ export default function App({ initialTab = 'dashboard' }) {
     if (window.confirm('Bạn có chắc chắn muốn đăng xuất tài khoản?')) {
       authService.logout();
       setUser(null);
-      setActiveTab('dashboard');
+      setWardrobe([]);
+      setActiveTab('login');
       triggerToast('Đã đăng xuất thành công.', 'info');
     }
   };
@@ -268,7 +282,7 @@ export default function App({ initialTab = 'dashboard' }) {
       {/* 1. Header & Navigation Dock */}
       <Navbar
         activeTab={activeTab}
-        setActiveTab={setActiveTab}
+        setActiveTab={handleNavigate}
         user={user}
         wardrobeCount={wardrobe.length}
         onOpenAuth={() => setActiveTab('login')}
@@ -284,8 +298,9 @@ export default function App({ initialTab = 'dashboard' }) {
           <LoginView
             onLogin={handleLogin}
             onDemoLogin={handleDemoLogin}
-            onBackToHome={() => setActiveTab('dashboard')}
+            onBackToHome={() => handleNavigate('dashboard')}
             onTriggerToast={triggerToast}
+            currentUser={user}
           />
         )}
 
@@ -293,7 +308,7 @@ export default function App({ initialTab = 'dashboard' }) {
           <DashboardView
             user={user}
             wardrobeCount={wardrobe.length}
-            onNavigate={setActiveTab}
+            onNavigate={handleNavigate}
             onAddWater={handleAddWater}
             waterConsumed={waterConsumed}
             waterTarget={currentWaterTarget}
@@ -312,7 +327,7 @@ export default function App({ initialTab = 'dashboard' }) {
             onAddItem={handleAddItem}
             onUpdateItem={handleUpdateItem}
             onDeleteItem={handleDeleteItem}
-            onNavigatePricing={() => setActiveTab('pricing')}
+            onNavigatePricing={() => handleNavigate('pricing')}
             onTriggerToast={triggerToast}
           />
         )}
@@ -324,7 +339,7 @@ export default function App({ initialTab = 'dashboard' }) {
             onGenerateOutfit={handleGenerateOutfit}
             outfitResult={stylistResult}
             isLoading={stylistLoading}
-            onNavigatePricing={() => setActiveTab('pricing')}
+            onNavigatePricing={() => handleNavigate('pricing')}
             onOpenAdModal={() => setAdModalOpen(true)}
             remainingAds={authService.getRemainingAdsCount()}
             onTriggerToast={triggerToast}
@@ -337,7 +352,7 @@ export default function App({ initialTab = 'dashboard' }) {
             onGeneratePlan={handleGenerateFitness}
             planResult={fitnessResult}
             isLoading={fitnessLoading}
-            onNavigatePricing={() => setActiveTab('pricing')}
+            onNavigatePricing={() => handleNavigate('pricing')}
             onOpenAdModal={() => setAdModalOpen(true)}
             remainingAds={authService.getRemainingAdsCount()}
             onTriggerToast={triggerToast}
@@ -349,7 +364,7 @@ export default function App({ initialTab = 'dashboard' }) {
             user={user}
             onUpdateProfile={handleUpdateProfile}
             onLogout={handleLogout}
-            onNavigatePricing={() => setActiveTab('pricing')}
+            onNavigatePricing={() => handleNavigate('pricing')}
             onTriggerToast={triggerToast}
           />
         )}
@@ -365,7 +380,7 @@ export default function App({ initialTab = 'dashboard' }) {
 
       {/* 4. Full-Width Footer */}
       <Footer
-        setActiveTab={setActiveTab}
+        setActiveTab={handleNavigate}
         onOpenAdModal={() => setAdModalOpen(true)}
         user={user}
       />

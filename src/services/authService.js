@@ -33,12 +33,11 @@ class AuthService {
   }
 
   _loadInitialUser() {
-    if (typeof window === 'undefined') return DEFAULT_USER;
+    if (typeof window === 'undefined') return null;
     try {
       const stored = localStorage.getItem(USER_STORAGE_KEY);
       if (!stored) {
-        localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(DEFAULT_USER));
-        return DEFAULT_USER;
+        return null;
       }
       const parsed = JSON.parse(stored);
       // Reset lượt AI nếu qua ngày mới
@@ -51,7 +50,7 @@ class AuthService {
       }
       return parsed;
     } catch {
-      return DEFAULT_USER;
+      return null;
     }
   }
 
