@@ -339,7 +339,7 @@ export default function PricingView({
                   </div>
                   <div className="receipt-row">
                     <span>Quyền lợi:</span>
-                    <strong>Tủ đồ vô hạn & Groq AI không giới hạn</strong>
+                    <strong>Tủ đồ không giới hạn & AI không giới hạn</strong>
                   </div>
                 </div>
 

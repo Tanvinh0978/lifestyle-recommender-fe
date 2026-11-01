@@ -43,7 +43,7 @@ export default function WardrobeView({
 
   const handleOpenAddModal = () => {
     if (isLimitReached) {
-      onTriggerToast?.('🔒 Tủ đồ bản FREE đã đạt giới hạn 8 món. Nâng cấp PRO VIP để mở khóa vô hạn!', 'warning');
+      onTriggerToast?.('🔒 Tủ đồ bản FREE đã đạt giới hạn 8 món. Nâng cấp PRO VIP để mở khóa không giới hạn!', 'warning');
       onNavigatePricing?.();
       return;
     }
@@ -164,7 +164,7 @@ export default function WardrobeView({
         <div className="quota-text-side">
           <div className="quota-status-badge">
             {isPro ? (
-              <span className="badge-vip-pill">👑 PRO VIP: VÔ HẠN MÓN ĐỒ</span>
+              <span className="badge-vip-pill">👑 PRO VIP: KHÔNG GIỚI HẠN MÓN ĐỒ</span>
             ) : (
               <span className="badge-free-pill">
                 FREE TIER: {currentCount} / 8 MÓN
@@ -192,7 +192,7 @@ export default function WardrobeView({
               className="btn-upgrade-mini"
               onClick={onNavigatePricing}
             >
-              Mở khóa Vô hạn (49k)
+              Mở khóa Không giới hạn (49k)
             </button>
           </div>
         )}

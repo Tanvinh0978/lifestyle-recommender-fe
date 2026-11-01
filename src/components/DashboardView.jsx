@@ -21,7 +21,7 @@ export default function DashboardView({
 
   const isPro = user?.plan === 'PRO';
   const aiUsed = user?.aiUsageCount || 0;
-  const wardrobeMax = isPro ? 'Vô hạn' : 8;
+  const wardrobeMax = isPro ? 'Không giới hạn' : 8;
 
   const waterProgress = Math.min(100, Math.round((waterConsumed / waterTarget) * 100));
   const calorieProgress = Math.min(100, Math.round((caloriesConsumed / dailyCalorieTarget) * 100));
@@ -149,7 +149,7 @@ export default function DashboardView({
               <span className="crown-vip">👑</span>
               <div>
                 <h4>Tài khoản PRO VIP đang kích hoạt</h4>
-                <p>Bạn đang sử dụng không giới hạn lượt AI, tủ đồ số vô hạn và các phân tích chuyên sâu.</p>
+                <p>Bạn đang sử dụng không giới hạn lượt AI, tủ đồ số không giới hạn và các phân tích chuyên sâu.</p>
               </div>
             </div>
             <span className="status-active-pill">Đang hoạt động</span>

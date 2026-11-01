@@ -85,7 +85,7 @@ export default function ProfileView({
 
         <div className="plan-badge-group">
           {isPro ? (
-            <span className="badge-vip-pill">👑 GÓI PRO VIP VÔ HẠN</span>
+            <span className="badge-vip-pill">👑 GÓI PRO VIP KHÔNG GIỚI HẠN</span>
           ) : (
             <div className="free-status-group">
               <span className="badge-free-pill">FREE TIER (3 LƯỢT AI/NGÀY)</span>

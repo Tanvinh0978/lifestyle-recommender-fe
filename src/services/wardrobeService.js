@@ -110,7 +110,7 @@ class WardrobeService {
     if (currentCount >= 8) {
       return {
         allowed: false,
-        reason: 'Bạn đã đạt giới hạn 8 món của bản FREE. Nâng cấp PRO VIP để sở hữu tủ đồ vô hạn!',
+        reason: 'Bạn đã đạt giới hạn 8 món của bản FREE. Nâng cấp PRO VIP để sở hữu tủ đồ không giới hạn!',
         currentCount,
         maxCount: 8
       };

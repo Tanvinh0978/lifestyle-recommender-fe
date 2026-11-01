@@ -75,7 +75,7 @@ export default function StylistView({
         <div className="header-status-actions">
           <div className="quota-pill-status">
             <span className="lightning-icon">⚡</span>
-            <span>Hạn mức hôm nay: <strong>{isPro ? 'Vô hạn (PRO VIP)' : `Còn ${remainingQuota} lượt`}</strong></span>
+            <span>Hạn mức hôm nay: <strong>{isPro ? 'Không giới hạn (PRO VIP)' : `Còn ${remainingQuota} lượt`}</strong></span>
           </div>
 
           {!isPro && remainingAds > 0 && (

@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function Navbar({ activeTab, setActiveTab, user, wardrobeCount, onOpenAuth, onLogout }) {
   const isPro = user?.plan === 'PRO';
-  const remainingAI = isPro ? 'Vô hạn' : `${Math.max(0, 3 - (user?.aiUsageCount || 0))}/3`;
+  const remainingAI = isPro ? 'Không giới hạn' : `${Math.max(0, 3 - (user?.aiUsageCount || 0))}/3`;
 
   return (
     <>

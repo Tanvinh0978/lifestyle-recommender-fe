@@ -37,7 +37,7 @@ export const PLANS = {
     badge: '👑 PHỔ BIẾN NHẤT',
     features: [
       { text: 'Lượt gọi Groq AI Stylist & Fitness KHÔNG GIỚI HẠN', included: true, highlight: true },
-      { text: 'Tủ đồ số cá nhân VÔ HẠN trang phục & phụ kiện', included: true, highlight: true },
+      { text: 'Tủ đồ số cá nhân KHÔNG GIỚI HẠN trang phục & phụ kiện', included: true, highlight: true },
       { text: 'Phân tích màu sắc & điểm hài hòa Lookbook AI 98%', included: true },
       { text: 'Gợi ý món đồ còn thiếu kèm giá & nơi mua ưu đãi', included: true },
       { text: 'Thực đơn 4 bữa thuần Việt chuẩn Macro & TDEE', included: true },
