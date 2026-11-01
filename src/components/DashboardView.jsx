@@ -50,7 +50,7 @@ export default function DashboardView({
         <div className="greeting-header-row">
           <div className="greeting-text-group">
             <h1 className="greeting-title">
-              Chào buổi sáng, {user?.name || 'Mai Linh'}
+              Chào mừng đến Wearwell
               <span className="sparkle-icon">✨</span>
             </h1>
             <p className="greeting-subtitle">
