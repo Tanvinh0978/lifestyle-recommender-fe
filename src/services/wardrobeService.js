@@ -4,7 +4,7 @@
 // ==========================================================
 
 const WARDROBE_STORAGE_KEY = 'ai_lifestyle_wardrobe_v2';
-const BACKEND_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+const BACKEND_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://lifestyle-recommender-be.onrender.com/api';
 
 export const WARDROBE_CATEGORIES = [
   { id: 'Tất cả', name: 'Tất cả', icon: '✨' },
@@ -124,9 +124,19 @@ class WardrobeService {
       throw new Error(quotaCheck.reason);
     }
 
+    // Luôn ưu tiên userEmail hợp lệ để đồng bộ liên thiết bị
+    let resolvedEmail = userEmail || itemData.user_email || '';
+    if (!resolvedEmail && typeof window !== 'undefined') {
+      try {
+        const u = JSON.parse(localStorage.getItem('ai_lifestyle_user_v2') || '{}');
+        resolvedEmail = u.email || '';
+      } catch (_) {}
+    }
+    if (!resolvedEmail) resolvedEmail = 'mailinh.lifestyle@gmail.com';
+
     const newItem = {
       id: 'wd_' + Date.now(),
-      user_email: userEmail || itemData.user_email || '',
+      user_email: resolvedEmail,
       name: itemData.name.trim(),
       category: itemData.category || 'Áo',
       color: itemData.color || 'Trắng',
@@ -169,20 +179,28 @@ class WardrobeService {
   }
 
   async fetchUserWardrobe(userEmail) {
-    if (!userEmail) return this.items;
+    let emailToUse = userEmail;
+    if (!emailToUse && typeof window !== 'undefined') {
+      try {
+        const u = JSON.parse(localStorage.getItem('ai_lifestyle_user_v2') || '{}');
+        emailToUse = u.email || '';
+      } catch (_) {}
+    }
+    if (!emailToUse) emailToUse = 'mailinh.lifestyle@gmail.com';
+
     try {
-      const res = await fetch(`${BACKEND_BASE_URL}/wardrobe?email=${encodeURIComponent(userEmail)}`);
+      const res = await fetch(`${BACKEND_BASE_URL}/wardrobe?email=${encodeURIComponent(emailToUse)}`);
       const data = await res.json();
       if (data.success && Array.isArray(data.items)) {
         if (data.items.length > 0) {
           const mapped = data.items.map(it => ({
             id: it.id,
-            user_email: it.user_email,
+            user_email: it.user_email || emailToUse,
             name: it.name,
             category: it.category,
             color: it.color,
-            imageUrl: it.image_url || it.imageUrl,
-            image_url: it.image_url || it.imageUrl,
+            imageUrl: it.image_url || it.imageUrl || CURATED_PRESETS[0].imageUrl,
+            image_url: it.image_url || it.imageUrl || CURATED_PRESETS[0].imageUrl,
             notes: it.notes || '',
             createdAt: it.created_at || it.createdAt || new Date().toISOString()
           }));
@@ -190,14 +208,14 @@ class WardrobeService {
           this._persist();
           return mapped;
         } else if (this.items.length > 0) {
-          // Đồng bộ các món ban đầu của user lên server
+          // Khi tài khoản chưa có đồ trên cloud: tự động đẩy toàn bộ món hiện có lên Render
           for (const item of this.items) {
-            await this._syncAddBackend({ ...item, user_email: userEmail });
+            await this._syncAddBackend({ ...item, user_email: emailToUse });
           }
         }
       }
-    } catch {
-      // Offline fallback
+    } catch (err) {
+      console.warn('Không thể đồng bộ tủ đồ từ Render cloud:', err);
     }
     return this.items;
   }
@@ -216,16 +234,16 @@ class WardrobeService {
           image_url: item.imageUrl || item.image_url
         })
       });
-    } catch {
-      // Backend có thể offline, frontend lưu persistent
+    } catch (err) {
+      console.warn('Lỗi push đồ lên Render:', err);
     }
   }
 
   async _syncDeleteBackend(id) {
     try {
       await fetch(`${BACKEND_BASE_URL}/wardrobe/${id}`, { method: 'DELETE' });
-    } catch {
-      // Offline fallback
+    } catch (err) {
+      console.warn('Lỗi xóa đồ trên Render:', err);
     }
   }
 }

@@ -4,7 +4,7 @@
 // Gắn nhãn [Mô phỏng AI] minh bạch khi sử dụng offline fallback
 // ==========================================================
 
-const BACKEND_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+const BACKEND_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://lifestyle-recommender-be.onrender.com/api';
 
 export const STYLIST_OCCASIONS = [
   { id: 'work', label: 'Công sở / Đi học', icon: '💼', vibe: 'Thanh lịch, chỉn chu, Smart Casual' },

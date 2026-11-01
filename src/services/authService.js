@@ -4,7 +4,7 @@
 // ==========================================================
 
 const USER_STORAGE_KEY = 'ai_lifestyle_user_v2';
-const BACKEND_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+const BACKEND_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://lifestyle-recommender-be.onrender.com/api';
 
 export const DEFAULT_USER = {
   id: 'usr_demo_01',

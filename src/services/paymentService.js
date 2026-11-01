@@ -4,7 +4,7 @@
 // Kiểm tra xác thực trạng thái qua API máy chủ / Webhook xác minh
 // ==========================================================
 
-const BACKEND_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+const BACKEND_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://lifestyle-recommender-be.onrender.com/api';
 
 export const PLANS = {
   FREE: {
