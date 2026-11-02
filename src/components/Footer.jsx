@@ -7,12 +7,10 @@ export default function Footer({ setActiveTab, onOpenAdModal, user }) {
         {/* Brand Column */}
         <div className="footer-brand-col">
           <div className="footer-brand-header" onClick={() => setActiveTab && setActiveTab('dashboard')}>
-            <div className="footer-brand-badge">
-              <span>✨</span>
-            </div>
+            <img src="/logo.png" alt="Wearwell Logo" className="footer-logo-img" />
             <div className="footer-brand-titles">
               <span className="footer-brand-name">WEARWELL</span>
-              <span className="footer-brand-slogan">AI Stylist & Smart Living</span>
+              <span className="footer-brand-slogan">Fashion & Wellness</span>
             </div>
           </div>
           <p className="footer-desc">
@@ -31,27 +29,27 @@ export default function Footer({ setActiveTab, onOpenAdModal, user }) {
           <ul className="footer-list">
             <li>
               <button type="button" onClick={() => setActiveTab && setActiveTab('stylist')}>
-                🪄 AI Stylist phối đồ thông minh
+                AI Stylist phối đồ thông minh
               </button>
             </li>
             <li>
               <button type="button" onClick={() => setActiveTab && setActiveTab('wardrobe')}>
-                👗 Tủ đồ số cá nhân
+                Tủ đồ số cá nhân
               </button>
             </li>
             <li>
               <button type="button" onClick={() => setActiveTab && setActiveTab('nutrition-fitness')}>
-                🥗 Thực đơn & Lịch tập PT
+                Thực đơn & Lịch tập PT
               </button>
             </li>
             <li>
               <button type="button" onClick={() => setActiveTab && setActiveTab('dashboard')}>
-                ⛅ Gợi ý trang phục theo thời tiết
+                Gợi ý trang phục theo thời tiết
               </button>
             </li>
             <li>
               <button type="button" onClick={() => setActiveTab && setActiveTab('profile')}>
-                📊 Tính toán BMI, BMR & Nước uống
+                Tính toán BMI, BMR & Nước uống
               </button>
             </li>
           </ul>
@@ -63,27 +61,27 @@ export default function Footer({ setActiveTab, onOpenAdModal, user }) {
           <ul className="footer-list">
             <li>
               <button type="button" className="highlight-link" onClick={() => setActiveTab && setActiveTab('pricing')}>
-                👑 Gói PRO VIP không giới hạn (49k)
+                Gói PRO VIP không giới hạn (49k)
               </button>
             </li>
             <li>
               <button type="button" onClick={() => onOpenAdModal && onOpenAdModal()}>
-                📺 Xem quảng cáo nhận thêm lượt AI
+                Xem quảng cáo nhận thêm lượt AI
               </button>
             </li>
             <li>
               <button type="button" onClick={() => setActiveTab && setActiveTab('profile')}>
-                👤 Hồ sơ cá nhân & Thể trạng
+                Hồ sơ cá nhân & Thể trạng
               </button>
             </li>
             <li>
               <a href="#privacy" onClick={(e) => { e.preventDefault(); alert('Dữ liệu cá nhân và hình ảnh tủ đồ của bạn được bảo mật tuyệt đối theo tiêu chuẩn mã hóa.'); }}>
-                🛡️ Chính sách bảo mật dữ liệu
+                Chính sách bảo mật dữ liệu
               </a>
             </li>
             <li>
               <a href="#terms" onClick={(e) => { e.preventDefault(); alert('Wearwell cung cấp các gợi ý phong cách sống thông minh dựa trên thông tin người dùng cung cấp.'); }}>
-                📋 Điều khoản dịch vụ
+                Điều khoản dịch vụ
               </a>
             </li>
           </ul>

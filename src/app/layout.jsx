@@ -10,7 +10,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="vi">
       <head>
-        <link rel="icon" href="/favicon.svg" />
+        <link rel="icon" href="/logo.png" />
       </head>
       <body>{children}</body>
     </html>

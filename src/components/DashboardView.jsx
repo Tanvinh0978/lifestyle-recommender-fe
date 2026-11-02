@@ -51,7 +51,6 @@ export default function DashboardView({
           <div className="greeting-text-group">
             <h1 className="greeting-title">
               Chào mừng đến Wearwell
-              <span className="sparkle-icon">✨</span>
             </h1>
             <p className="greeting-subtitle">
               {cityWeather.desc} tại <strong>{user?.city || 'Hà Nội'}</strong> — hoàn hảo cho một ngày tràn đầy cảm hứng và năng lượng tích cực!
@@ -276,11 +275,11 @@ export default function DashboardView({
           </div>
           <div className={`kpi-status-tag ${wardrobeCount >= 8 && !isPro ? 'orange' : 'green'}`}>
             {isPro ? (
-              <span>✨ Không giới hạn</span>
+              <span>Không giới hạn</span>
             ) : wardrobeCount >= 8 ? (
-              <span>⚠️ Đã đầy kho FREE</span>
+              <span>Đã đầy kho FREE</span>
             ) : (
-              <span>👗 Còn {8 - wardrobeCount} chỗ trống</span>
+              <span>Còn {8 - wardrobeCount} chỗ trống</span>
             )}
           </div>
         </div>
@@ -292,7 +291,6 @@ export default function DashboardView({
       <section className="dashboard-outfit-section">
         <div className="section-title-row">
           <div className="title-with-icon">
-            <span className="section-icon">🪄</span>
             <h2>Gợi ý Outfit hôm nay</h2>
           </div>
           <span className="badge-match-rate">98% Hợp thời tiết & vóc dáng</span>

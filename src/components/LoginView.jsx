@@ -87,8 +87,8 @@ export default function LoginView({ onLogin, onDemoLogin, onBackToHome, onTrigge
         </button>
 
         <div className="login-brand-tag">
-          <span className="sparkle-icon">✨</span>
-          <span>WEARWELL AI</span>
+          <img src="/logo.png" alt="Wearwell" style={{ height: '22px', width: 'auto', marginRight: '6px' }} />
+          <span>WEARWELL</span>
         </div>
       </div>
 
@@ -98,12 +98,10 @@ export default function LoginView({ onLogin, onDemoLogin, onBackToHome, onTrigge
         {/* ========================================================= */}
         <div className="login-hero-card-glass">
           <div className="hero-brand-header">
-            <div className="brand-logo-circle">
-              <span>✨</span>
-            </div>
+            <img src="/logo.png" alt="Wearwell Logo" className="login-logo-img" />
             <div>
               <h1 className="hero-brand-name">WEARWELL</h1>
-              <p className="hero-brand-tagline">AI Personal Stylist & Smart Living</p>
+              <p className="hero-brand-tagline">Fashion & Wellness</p>
             </div>
           </div>
 

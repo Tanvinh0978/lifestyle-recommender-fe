@@ -13,12 +13,10 @@ export default function Navbar({ activeTab, setActiveTab, user, wardrobeCount, o
         <div className="header-inner">
           {/* Logo & Brand Identity */}
           <div className="brand-group" onClick={() => setActiveTab('dashboard')}>
-            <div className="brand-badge-icon">
-              <span>✨</span>
-            </div>
+            <img src="/logo.png" alt="Wearwell Logo" className="brand-logo-img" />
             <div className="brand-titles">
               <span className="brand-main-title">WEARWELL</span>
-              <span className="brand-sub-title">AI Stylist & Smart Living</span>
+              <span className="brand-sub-title">Fashion & Wellness</span>
             </div>
           </div>
 
@@ -28,7 +26,6 @@ export default function Navbar({ activeTab, setActiveTab, user, wardrobeCount, o
               className={`nav-tab-btn ${activeTab === 'dashboard' ? 'active' : ''}`}
               onClick={() => setActiveTab('dashboard')}
             >
-              <span className="nav-icon">📊</span>
               <span>Tổng quan</span>
             </button>
 
@@ -36,7 +33,6 @@ export default function Navbar({ activeTab, setActiveTab, user, wardrobeCount, o
               className={`nav-tab-btn ${activeTab === 'wardrobe' ? 'active' : ''}`}
               onClick={() => setActiveTab('wardrobe')}
             >
-              <span className="nav-icon">👗</span>
               <span>Tủ đồ số</span>
               <span className="nav-counter-tag">{wardrobeCount}</span>
             </button>
@@ -45,7 +41,6 @@ export default function Navbar({ activeTab, setActiveTab, user, wardrobeCount, o
               className={`nav-tab-btn ${activeTab === 'stylist' ? 'active' : ''}`}
               onClick={() => setActiveTab('stylist')}
             >
-              <span className="nav-icon">🪄</span>
               <span>Stylist AI</span>
             </button>
 
@@ -53,7 +48,6 @@ export default function Navbar({ activeTab, setActiveTab, user, wardrobeCount, o
               className={`nav-tab-btn ${activeTab === 'nutrition-fitness' ? 'active' : ''}`}
               onClick={() => setActiveTab('nutrition-fitness')}
             >
-              <span className="nav-icon">🥗</span>
               <span>Ăn uống & PT</span>
             </button>
 
@@ -61,7 +55,6 @@ export default function Navbar({ activeTab, setActiveTab, user, wardrobeCount, o
               className={`nav-tab-btn ${activeTab === 'profile' ? 'active' : ''}`}
               onClick={() => setActiveTab('profile')}
             >
-              <span className="nav-icon">👤</span>
               <span>Hồ sơ & BMI</span>
             </button>
 
@@ -69,7 +62,6 @@ export default function Navbar({ activeTab, setActiveTab, user, wardrobeCount, o
               className={`nav-tab-btn vip-link ${activeTab === 'pricing' ? 'active' : ''}`}
               onClick={() => setActiveTab('pricing')}
             >
-              <span className="nav-icon">👑</span>
               <span>Gói PRO VIP</span>
               <span className="badge-promo-tag">49k</span>
             </button>
@@ -80,13 +72,12 @@ export default function Navbar({ activeTab, setActiveTab, user, wardrobeCount, o
             {user ? (
               <div className="user-status-pill">
                 {isPro ? (
-                  <span className="plan-badge-pro">👑 PRO VIP</span>
+                  <span className="plan-badge-pro">PRO VIP</span>
                 ) : (
                   <span className="plan-badge-free">FREE</span>
                 )}
 
                 <div className="ai-quota-counter" title="Số lượt gọi AI còn lại hôm nay">
-                  <span className="lightning-icon">⚡</span>
                   <span>{remainingAI}</span>
                 </div>
 
@@ -115,7 +106,11 @@ export default function Navbar({ activeTab, setActiveTab, user, wardrobeCount, o
                   onClick={onLogout}
                   title="Đăng xuất"
                 >
-                  🚪
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                    <polyline points="16 17 21 12 16 7" />
+                    <line x1="21" y1="12" x2="9" y2="12" />
+                  </svg>
                 </button>
               </div>
             ) : (
