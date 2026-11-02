@@ -1,7 +1,9 @@
 // ==========================================================
 // DIGITAL WARDROBE SERVICE
-// Quản lý tủ đồ số cá nhân, upload ảnh và thực thi hạn mức FREE 8 món
+// Quản lý tủ đồ số cá nhân, kết nối Cloud Database Supabase 24/7
 // ==========================================================
+
+import { supabase, isSupabaseConfigured } from './supabaseClient.js';
 
 const WARDROBE_STORAGE_KEY = 'ai_lifestyle_wardrobe_v2';
 const BACKEND_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://lifestyle-recommender-be.onrender.com/api';
@@ -148,11 +150,30 @@ class WardrobeService {
 
     this.items = [newItem, ...this.items];
     this._persist();
-    await this._syncAddBackend(newItem);
+
+    // 1. Lưu ngay tức thì vào Cloud Database Supabase
+    if (isSupabaseConfigured && supabase) {
+      try {
+        await supabase.from('wardrobe_items').insert([{
+          id: newItem.id,
+          user_email: resolvedEmail,
+          name: newItem.name,
+          category: newItem.category,
+          color: newItem.color,
+          image_url: newItem.image_url,
+          notes: newItem.notes
+        }]);
+      } catch (err) {
+        console.warn('Supabase insert error, falling back to Render:', err);
+      }
+    }
+
+    // 2. Gửi dự phòng lên Render
+    this._syncAddBackend(newItem);
     return newItem;
   }
 
-  updateItem(id, updateData) {
+  async updateItem(id, updateData) {
     const index = this.items.findIndex(item => item.id === id);
     if (index === -1) throw new Error('Không tìm thấy món trang phục.');
 
@@ -162,12 +183,31 @@ class WardrobeService {
       updatedAt: new Date().toISOString()
     };
     this._persist();
+
+    if (isSupabaseConfigured && supabase) {
+      try {
+        await supabase.from('wardrobe_items').update({
+          name: updateData.name,
+          category: updateData.category,
+          color: updateData.color,
+          image_url: updateData.imageUrl || updateData.image_url,
+          notes: updateData.notes
+        }).eq('id', id);
+      } catch (_) {}
+    }
     return this.items[index];
   }
 
-  deleteItem(id) {
+  async deleteItem(id) {
     this.items = this.items.filter(item => item.id !== id);
     this._persist();
+
+    // Xóa trên Supabase
+    if (isSupabaseConfigured && supabase) {
+      try {
+        await supabase.from('wardrobe_items').delete().eq('id', id);
+      } catch (_) {}
+    }
     this._syncDeleteBackend(id);
     return true;
   }
@@ -186,8 +226,51 @@ class WardrobeService {
         emailToUse = u.email || '';
       } catch (_) {}
     }
-    if (!emailToUse) emailToUse = 'mailinh.lifestyle@gmail.com';
+    if (!emailToUse) emailToUse = 'an.nguyen@gmail.com';
 
+    // 1. ƯU TIÊN 1: LẤY TRỰC TIẾP TỪ SUPABASE CLOUD DATABASE
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data: supaItems, error } = await supabase
+          .from('wardrobe_items')
+          .select('*')
+          .eq('user_email', emailToUse)
+          .order('created_at', { ascending: false });
+
+        if (!error && Array.isArray(supaItems) && supaItems.length > 0) {
+          const mapped = supaItems.map(it => ({
+            id: it.id,
+            user_email: it.user_email || emailToUse,
+            name: it.name,
+            category: it.category,
+            color: it.color,
+            imageUrl: it.image_url || CURATED_PRESETS[0].imageUrl,
+            image_url: it.image_url || CURATED_PRESETS[0].imageUrl,
+            notes: it.notes || '',
+            createdAt: it.created_at || new Date().toISOString()
+          }));
+          this.items = mapped;
+          this._persist();
+          return mapped;
+        } else if (!error && Array.isArray(supaItems) && supaItems.length === 0 && this.items.length > 0) {
+          // Khi tài khoản mới chưa có trên Supabase, tự động tải các món khởi đầu lên
+          const toInsert = this.items.map(it => ({
+            id: it.id,
+            user_email: emailToUse,
+            name: it.name,
+            category: it.category,
+            color: it.color,
+            image_url: it.imageUrl || it.image_url,
+            notes: it.notes || ''
+          }));
+          await supabase.from('wardrobe_items').insert(toInsert);
+        }
+      } catch (supaErr) {
+        console.warn('Lỗi kết nối Supabase, chuyển sang Render backend:', supaErr);
+      }
+    }
+
+    // 2. DỰ PHÒNG: LẤY TỪ RENDER BACKEND
     try {
       const res = await fetch(`${BACKEND_BASE_URL}/wardrobe?email=${encodeURIComponent(emailToUse)}`);
       const data = await res.json();
@@ -207,11 +290,6 @@ class WardrobeService {
           this.items = mapped;
           this._persist();
           return mapped;
-        } else if (this.items.length > 0) {
-          // Khi tài khoản chưa có đồ trên cloud: tự động đẩy toàn bộ món hiện có lên Render
-          for (const item of this.items) {
-            await this._syncAddBackend({ ...item, user_email: emailToUse });
-          }
         }
       }
     } catch (err) {
@@ -230,35 +308,32 @@ class WardrobeService {
     }
     if (!emailToUse) emailToUse = 'an.nguyen@gmail.com';
 
-    // 1. Đẩy toàn bộ món đồ cục bộ lên Render Cloud
+    // 1. Đẩy toàn bộ món hiện tại lên Supabase Cloud
+    if (isSupabaseConfigured && supabase) {
+      try {
+        for (const item of this.items) {
+          await supabase.from('wardrobe_items').upsert({
+            id: item.id,
+            user_email: emailToUse,
+            name: item.name,
+            category: item.category,
+            color: item.color,
+            image_url: item.imageUrl || item.image_url,
+            notes: item.notes || ''
+          });
+        }
+      } catch (err) {
+        console.warn('Lỗi sync Supabase:', err);
+      }
+    }
+
+    // 2. Đẩy dự phòng lên Render Cloud
     for (const item of this.items) {
       await this._syncAddBackend({ ...item, user_email: emailToUse });
     }
 
-    // 2. Tải lại danh sách chuẩn xác từ Render Cloud về
-    try {
-      const res = await fetch(`${BACKEND_BASE_URL}/wardrobe?email=${encodeURIComponent(emailToUse)}`);
-      const data = await res.json();
-      if (data.success && Array.isArray(data.items) && data.items.length > 0) {
-        const mapped = data.items.map(it => ({
-          id: it.id,
-          user_email: it.user_email || emailToUse,
-          name: it.name,
-          category: it.category,
-          color: it.color,
-          imageUrl: it.image_url || it.imageUrl || CURATED_PRESETS[0].imageUrl,
-          image_url: it.image_url || it.imageUrl || CURATED_PRESETS[0].imageUrl,
-          notes: it.notes || '',
-          createdAt: it.created_at || it.createdAt || new Date().toISOString()
-        }));
-        this.items = mapped;
-        this._persist();
-        return mapped;
-      }
-    } catch (err) {
-      console.warn('Lỗi đồng bộ Cloud:', err);
-    }
-    return this.items;
+    // 3. Tải lại danh sách chuẩn nhất từ Supabase Cloud
+    return await this.fetchUserWardrobe(emailToUse);
   }
 
   async _syncAddBackend(item) {

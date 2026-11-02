@@ -3,6 +3,8 @@
 // Sẵn sàng kết nối Supabase và đồng bộ server-side
 // ==========================================================
 
+import { supabase, isSupabaseConfigured } from './supabaseClient.js';
+
 const USER_STORAGE_KEY = 'ai_lifestyle_user_v2';
 const BACKEND_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://lifestyle-recommender-be.onrender.com/api';
 
@@ -166,9 +168,31 @@ class AuthService {
   }
 
   /**
-   * Tích hợp đồng bộ Backend/Supabase trong tương lai
+   * Đồng bộ lên Supabase Cloud Database & Backend
    */
   async _syncToServer(user) {
+    if (!user || !user.email) return;
+
+    // 1. Lưu trực tiếp vào Supabase Cloud Database
+    if (isSupabaseConfigured && supabase) {
+      try {
+        await supabase.from('users').upsert({
+          id: user.id || 'usr_' + Date.now(),
+          email: user.email.toLowerCase(),
+          name: user.name || '',
+          city: user.city || 'Hà Nội',
+          gender: user.gender || 'Nữ',
+          height: Number(user.height) || 163,
+          weight: Number(user.weight) || 51,
+          health_goal: user.healthGoal || 'fat_loss',
+          plan: user.plan || 'FREE'
+        });
+      } catch (err) {
+        console.warn('Lỗi lưu user lên Supabase:', err);
+      }
+    }
+
+    // 2. Dự phòng Render
     try {
       await fetch(`${BACKEND_BASE_URL}/users/sync`, {
         method: 'POST',
@@ -176,7 +200,7 @@ class AuthService {
         body: JSON.stringify(user)
       });
     } catch {
-      // Backend có thể offline hoặc chưa bật, client vẫn hoạt động mượt mà
+      // Backend offline fallback
     }
   }
 }
