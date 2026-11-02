@@ -84,12 +84,15 @@ export default function Navbar({ activeTab, setActiveTab, user, wardrobeCount, o
                 <div
                   className="user-avatar-pill"
                   onClick={() => setActiveTab('profile')}
-                  title="Xem và chỉnh sửa hồ sơ sức khỏe"
+                  title={`Tài khoản: ${user.name} (${user.email || 'N/A'}) - Bấm để xem hồ sơ`}
                 >
                   <div className="user-avatar-circle">
                     {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
                   </div>
-                  <span className="user-display-name">{user.name}</span>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', lineHeight: 1.15 }}>
+                    <span className="user-display-name">{user.name}</span>
+                    <span style={{ fontSize: '0.68rem', color: 'var(--ink-muted)' }}>{user.email}</span>
+                  </div>
                 </div>
 
                 {!isPro && (

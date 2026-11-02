@@ -146,15 +146,22 @@ export default function App({ initialTab = 'dashboard' }) {
   // ==========================================
   // ACTIONS: WARDROBE
   // ==========================================
-  const handleAddItem = (itemData) => {
+  const handleAddItem = async (itemData) => {
     try {
-      wardrobeService.addItem(itemData, user?.plan, user?.email);
+      await wardrobeService.addItem(itemData, user?.plan, user?.email);
       setWardrobe([...wardrobeService.getAllItems()]);
-      triggerToast('✨ Đã thêm trang phục mới vào tủ đồ thành công!');
+      triggerToast('✨ Đã thêm trang phục mới và đồng bộ Cloud!');
     } catch (err) {
       triggerToast(err.message, 'warning');
       setActiveTab('pricing');
     }
+  };
+
+  const handleSyncCloud = async () => {
+    if (!user?.email) return wardrobe;
+    const items = await wardrobeService.syncAllToCloud(user.email);
+    setWardrobe([...items]);
+    return items;
   };
 
   const handleUpdateItem = (id, updateData) => {
@@ -329,6 +336,7 @@ export default function App({ initialTab = 'dashboard' }) {
             onDeleteItem={handleDeleteItem}
             onNavigatePricing={() => handleNavigate('pricing')}
             onTriggerToast={triggerToast}
+            onSyncCloud={handleSyncCloud}
           />
         )}
 

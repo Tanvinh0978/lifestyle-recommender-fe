@@ -1456,6 +1456,33 @@ a {
   transform: translateY(-2px);
 }
 
+.btn-sync-cloud-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 11px 18px;
+  border-radius: var(--radius-full);
+  background: rgba(124, 58, 237, 0.08);
+  border: 1px solid rgba(124, 58, 237, 0.25);
+  color: var(--primary);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-sync-cloud-action:hover:not(:disabled) {
+  background: var(--primary);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.25);
+  transform: translateY(-1px);
+}
+
+.btn-sync-cloud-action:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .wardrobe-quota-card-glass {
   padding: 18px 22px;
   display: flex;

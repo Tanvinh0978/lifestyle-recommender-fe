@@ -118,7 +118,7 @@ class WardrobeService {
     return { allowed: true, currentCount, maxCount: 8 };
   }
 
-  addItem(itemData, userPlan = 'FREE', userEmail = '') {
+  async addItem(itemData, userPlan = 'FREE', userEmail = '') {
     const quotaCheck = this.canAddItem(userPlan);
     if (!quotaCheck.allowed) {
       throw new Error(quotaCheck.reason);
@@ -132,7 +132,7 @@ class WardrobeService {
         resolvedEmail = u.email || '';
       } catch (_) {}
     }
-    if (!resolvedEmail) resolvedEmail = 'mailinh.lifestyle@gmail.com';
+    if (!resolvedEmail) resolvedEmail = 'an.nguyen@gmail.com';
 
     const newItem = {
       id: 'wd_' + Date.now(),
@@ -148,7 +148,7 @@ class WardrobeService {
 
     this.items = [newItem, ...this.items];
     this._persist();
-    this._syncAddBackend(newItem);
+    await this._syncAddBackend(newItem);
     return newItem;
   }
 
@@ -216,6 +216,47 @@ class WardrobeService {
       }
     } catch (err) {
       console.warn('Không thể đồng bộ tủ đồ từ Render cloud:', err);
+    }
+    return this.items;
+  }
+
+  async syncAllToCloud(userEmail) {
+    let emailToUse = userEmail;
+    if (!emailToUse && typeof window !== 'undefined') {
+      try {
+        const u = JSON.parse(localStorage.getItem('ai_lifestyle_user_v2') || '{}');
+        emailToUse = u.email || '';
+      } catch (_) {}
+    }
+    if (!emailToUse) emailToUse = 'an.nguyen@gmail.com';
+
+    // 1. Đẩy toàn bộ món đồ cục bộ lên Render Cloud
+    for (const item of this.items) {
+      await this._syncAddBackend({ ...item, user_email: emailToUse });
+    }
+
+    // 2. Tải lại danh sách chuẩn xác từ Render Cloud về
+    try {
+      const res = await fetch(`${BACKEND_BASE_URL}/wardrobe?email=${encodeURIComponent(emailToUse)}`);
+      const data = await res.json();
+      if (data.success && Array.isArray(data.items) && data.items.length > 0) {
+        const mapped = data.items.map(it => ({
+          id: it.id,
+          user_email: it.user_email || emailToUse,
+          name: it.name,
+          category: it.category,
+          color: it.color,
+          imageUrl: it.image_url || it.imageUrl || CURATED_PRESETS[0].imageUrl,
+          image_url: it.image_url || it.imageUrl || CURATED_PRESETS[0].imageUrl,
+          notes: it.notes || '',
+          createdAt: it.created_at || it.createdAt || new Date().toISOString()
+        }));
+        this.items = mapped;
+        this._persist();
+        return mapped;
+      }
+    } catch (err) {
+      console.warn('Lỗi đồng bộ Cloud:', err);
     }
     return this.items;
   }

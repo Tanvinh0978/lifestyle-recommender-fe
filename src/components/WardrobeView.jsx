@@ -8,11 +8,13 @@ export default function WardrobeView({
   onUpdateItem,
   onDeleteItem,
   onNavigatePricing,
-  onTriggerToast
+  onTriggerToast,
+  onSyncCloud
 }) {
   const [selectedCategory, setSelectedCategory] = useState('Tất cả');
   const [selectedColor, setSelectedColor] = useState('Tất cả');
   const [searchQuery, setSearchQuery] = useState('');
+  const [isSyncing, setIsSyncing] = useState(false);
   
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -137,6 +139,20 @@ export default function WardrobeView({
     }
   };
 
+  const handleManualSync = async () => {
+    setIsSyncing(true);
+    try {
+      if (onSyncCloud) {
+        const items = await onSyncCloud();
+        onTriggerToast?.(`☁️ Đồng bộ Cloud thành công! Đã tải ${items?.length || 0} món đồ cho tài khoản ${user?.email || ''}`);
+      }
+    } catch {
+      onTriggerToast?.('Lỗi kết nối máy chủ Cloud, vui lòng thử lại sau giây lát.', 'warning');
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
   return (
     <div className="wardrobe-page-container animate-fade-in">
       {/* ========================================================= */}
@@ -150,13 +166,25 @@ export default function WardrobeView({
           </p>
         </div>
 
-        <button
-          className="btn-add-item-primary"
-          onClick={handleOpenAddModal}
-        >
-          <span className="plus-icon">+</span>
-          <span>Thêm món đồ mới</span>
-        </button>
+        <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+          <button
+            type="button"
+            className="btn-sync-cloud-action"
+            onClick={handleManualSync}
+            disabled={isSyncing}
+            title="Đồng bộ tủ đồ giữa các thiết bị qua máy chủ Cloud"
+          >
+            <span>{isSyncing ? 'Đang đồng bộ...' : '☁️ Đồng bộ Cloud'}</span>
+          </button>
+
+          <button
+            className="btn-add-item-primary"
+            onClick={handleOpenAddModal}
+          >
+            <span className="plus-icon">+</span>
+            <span>Thêm món đồ mới</span>
+          </button>
+        </div>
       </div>
 
       {/* Quota indicator card */}
