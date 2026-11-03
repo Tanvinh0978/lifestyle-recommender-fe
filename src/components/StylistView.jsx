@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { STYLIST_OCCASIONS, STYLIST_WEATHERS } from '../services/aiService.js';
+import { communityOutfitService } from '../services/communityOutfitService.js';
 import ProAIChatBox from './ProAIChatBox.jsx';
 
 export default function StylistView({
@@ -11,7 +12,8 @@ export default function StylistView({
   onNavigatePricing,
   onOpenAdModal,
   remainingAds = 3,
-  onTriggerToast
+  onTriggerToast,
+  onNavigateCommunity
 }) {
   const [selectedOccasion, setSelectedOccasion] = useState(STYLIST_OCCASIONS[0]);
   const [selectedWeather, setSelectedWeather] = useState(STYLIST_WEATHERS[1]); // Dịu mát
@@ -56,6 +58,37 @@ export default function StylistView({
       onTriggerToast?.('📋 Đã sao chép liên kết Lookbook vào bộ nhớ tạm!');
     } else {
       onTriggerToast?.('✨ Đã tạo liên kết chia sẻ Lookbook!');
+    }
+  };
+
+  const handlePublishToCommunity = () => {
+    if (!outfitResult) return;
+    const mappedItems = Array.isArray(outfitResult.items) ? outfitResult.items.map(it => ({
+      name: it.name,
+      category: it.slot || 'Trang phục',
+      color: it.color || 'Tự nhiên',
+      imageUrl: it.imageUrl
+    })) : [];
+
+    const rawScore = Number(outfitResult.harmonyScore) || 92;
+    const scaledScore = rawScore > 10 ? Number((rawScore / 10).toFixed(1)) : rawScore;
+
+    communityOutfitService.createPost({
+      authorName: user?.name || 'Nguyễn Văn An',
+      authorEmail: user?.email || 'an.nguyen@gmail.com',
+      isPro: user?.plan === 'PRO',
+      title: outfitResult.title || `Bản phối AI: ${selectedOccasion.label}`,
+      context: `${selectedOccasion.icon} ${selectedOccasion.label}`,
+      imageUrl: mappedItems[0]?.imageUrl || 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800',
+      outfitItems: mappedItems,
+      score: scaledScore,
+      aiReview: outfitResult.stylingAdvice || 'Bản phối xuất sắc chuẩn phong cách.',
+      aiTip: outfitResult.missingSuggestion ? `Gợi ý thêm: ${outfitResult.missingSuggestion.name} (${outfitResult.missingSuggestion.reason})` : 'Tự tin sải bước!'
+    });
+
+    onTriggerToast?.('🎉 Đã đăng bộ đồ lên Cộng đồng thành công! Đang chuyển đến Bảng tin...', 'success');
+    if (onNavigateCommunity) {
+      setTimeout(() => onNavigateCommunity(), 650);
     }
   };
 
@@ -192,23 +225,39 @@ export default function StylistView({
           </div>
         </div>
 
-        {/* Toggle Prioritize Wardrobe */}
-        <div className="wardrobe-priority-toggle-row">
-          <div className="toggle-text-side">
-            <span className="toggle-main-title">Ưu tiên tủ đồ cá nhân</span>
-            <span className="toggle-sub-desc">
-              Tối đa hóa các món đồ bạn đã thêm vào ứng dụng ({wardrobe.length} món sẵn có)
-            </span>
-          </div>
-
-          <label className="switch-control">
-            <input
-              type="checkbox"
-              checked={prioritizeWardrobe}
-              onChange={(e) => setPrioritizeWardrobe(e.target.checked)}
-            />
-            <span className="slider-round"></span>
+        {/* Segmented Mode Switcher: Phối từ Tủ đồ vs Phối Tự do */}
+        <div className="stylist-mode-segmented-section">
+          <label className="section-label-row">
+            <span className="label-icon">⚙️</span>
+            <span>Chế độ nguồn đồ:</span>
           </label>
+          <div className="segmented-mode-container">
+            <button
+              type="button"
+              className={`segmented-mode-btn ${prioritizeWardrobe ? 'active' : ''}`}
+              onClick={() => setPrioritizeWardrobe(true)}
+            >
+              <span className="mode-icon">👗</span>
+              <div className="mode-text-wrap">
+                <strong className="mode-main-label">Phối từ Tủ đồ của tôi</strong>
+                <span className="mode-sub-label">Sử dụng {wardrobe.length} món sẵn có trong tủ</span>
+              </div>
+              {prioritizeWardrobe && <span className="mode-active-dot">✓</span>}
+            </button>
+
+            <button
+              type="button"
+              className={`segmented-mode-btn ${!prioritizeWardrobe ? 'active' : ''}`}
+              onClick={() => setPrioritizeWardrobe(false)}
+            >
+              <span className="mode-icon">✨</span>
+              <div className="mode-text-wrap">
+                <strong className="mode-main-label">Phối Tự Do / Xu Hướng Mới</strong>
+                <span className="mode-sub-label">AI tự do sáng tạo outfit & gợi ý mua sắm</span>
+              </div>
+              {!prioritizeWardrobe && <span className="mode-active-dot">✓</span>}
+            </button>
+          </div>
         </div>
 
         {/* Action Button CTA */}
@@ -362,6 +411,21 @@ export default function StylistView({
 
           {/* Action Buttons */}
           <div className="outfit-actions-footer">
+            <button
+              className="btn-action-pill community-publish"
+              onClick={handlePublishToCommunity}
+              style={{
+                background: 'linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%)',
+                color: '#FFFFFF',
+                border: 'none',
+                boxShadow: '0 4px 14px rgba(124, 58, 237, 0.35)',
+                fontWeight: 700
+              }}
+              title="Đăng bộ đồ này lên Cộng đồng để mọi người cùng đánh giá và bình luận"
+            >
+              <span>📢 Đăng lên Cộng đồng ({outfitResult.harmonyScore || 96}đ)</span>
+            </button>
+
             <button
               className={`btn-action-pill ${isOutfitSaved ? 'active' : ''}`}
               onClick={handleSaveLook}

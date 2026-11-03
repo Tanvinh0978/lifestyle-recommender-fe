@@ -8,6 +8,7 @@ import StylistView from './components/StylistView.jsx';
 import NutritionFitnessView from './components/NutritionFitnessView.jsx';
 import ProfileView from './components/ProfileView.jsx';
 import PricingView from './components/PricingView.jsx';
+import CommunityOutfitFeedView from './components/CommunityOutfitFeedView.jsx';
 import LoginView from './components/LoginView.jsx';
 import AuthModal from './components/AuthModal.jsx';
 import AdModal from './components/AdModal.jsx';
@@ -337,6 +338,7 @@ export default function App({ initialTab = 'dashboard' }) {
             onNavigatePricing={() => handleNavigate('pricing')}
             onTriggerToast={triggerToast}
             onSyncCloud={handleSyncCloud}
+            onNavigateCommunity={() => handleNavigate('community')}
           />
         )}
 
@@ -350,6 +352,16 @@ export default function App({ initialTab = 'dashboard' }) {
             onNavigatePricing={() => handleNavigate('pricing')}
             onOpenAdModal={() => setAdModalOpen(true)}
             remainingAds={authService.getRemainingAdsCount()}
+            onTriggerToast={triggerToast}
+            onNavigateCommunity={() => handleNavigate('community')}
+          />
+        )}
+
+        {activeTab === 'community' && (
+          <CommunityOutfitFeedView
+            user={user}
+            wardrobe={wardrobe}
+            onNavigateWardrobe={() => handleNavigate('wardrobe')}
             onTriggerToast={triggerToast}
           />
         )}

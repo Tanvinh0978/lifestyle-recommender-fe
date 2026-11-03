@@ -45,6 +45,14 @@ export default function Navbar({ activeTab, setActiveTab, user, wardrobeCount, o
             </button>
 
             <button
+              className={`nav-tab-btn ${activeTab === 'community' ? 'active' : ''}`}
+              onClick={() => setActiveTab('community')}
+            >
+              <span>Chấm điểm & Cộng đồng</span>
+              <span className="badge-promo-tag" style={{ background: '#EDE9FE', color: '#7C3AED' }}>Mới</span>
+            </button>
+
+            <button
               className={`nav-tab-btn ${activeTab === 'nutrition-fitness' ? 'active' : ''}`}
               onClick={() => setActiveTab('nutrition-fitness')}
             >
@@ -157,6 +165,14 @@ export default function Navbar({ activeTab, setActiveTab, user, wardrobeCount, o
               <span className="dock-glow-dot"></span>
             </div>
             <span className="dock-label">Stylist AI</span>
+          </button>
+
+          <button
+            className={`dock-tab-item ${activeTab === 'community' ? 'active' : ''}`}
+            onClick={() => setActiveTab('community')}
+          >
+            <span className="dock-icon">forum</span>
+            <span className="dock-label">Cộng đồng</span>
           </button>
 
           <button

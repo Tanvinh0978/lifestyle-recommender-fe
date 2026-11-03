@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { WARDROBE_CATEGORIES, POPULAR_COLORS, CURATED_PRESETS } from '../services/wardrobeService.js';
+import { communityOutfitService, OUTFIT_CONTEXTS } from '../services/communityOutfitService.js';
 
 export default function WardrobeView({
   wardrobe,
@@ -9,7 +10,8 @@ export default function WardrobeView({
   onDeleteItem,
   onNavigatePricing,
   onTriggerToast,
-  onSyncCloud
+  onSyncCloud,
+  onNavigateCommunity
 }) {
   const [selectedCategory, setSelectedCategory] = useState('Tất cả');
   const [selectedColor, setSelectedColor] = useState('Tất cả');
@@ -32,6 +34,93 @@ export default function WardrobeView({
   const isPro = user?.plan === 'PRO';
   const currentCount = wardrobe.length;
   const isLimitReached = !isPro && currentCount >= 8;
+
+  // Mix & Match (Tự phối đồ từ tủ cá nhân & đăng cộng đồng)
+  const [isMixModalOpen, setIsMixModalOpen] = useState(false);
+  const [mixItems, setMixItems] = useState([]);
+  const [mixContext, setMixContext] = useState(OUTFIT_CONTEXTS[0]);
+  const [mixTitle, setMixTitle] = useState('');
+  const [mixScoreResult, setMixScoreResult] = useState(null);
+  const [isMixScoring, setIsMixScoring] = useState(false);
+
+  const handleOpenMixModal = (preselectedItem = null) => {
+    if (preselectedItem) {
+      setMixItems([preselectedItem]);
+    } else if (mixItems.length === 0 && wardrobe.length > 0) {
+      // Tự chọn 2 món đầu tiên để người dùng thấy ngay layout
+      setMixItems(wardrobe.slice(0, 2));
+    }
+    setMixScoreResult(null);
+    setIsMixModalOpen(true);
+  };
+
+  const handleToggleMixItem = (item) => {
+    const isSelected = mixItems.some(i => i.id === item.id);
+    if (isSelected) {
+      setMixItems(mixItems.filter(i => i.id !== item.id));
+      setMixScoreResult(null);
+    } else {
+      if (mixItems.length >= 4) {
+        onTriggerToast?.('Tối đa chọn 4 món đồ cho 1 bộ phối!', 'warning');
+        return;
+      }
+      setMixItems([...mixItems, item]);
+      setMixScoreResult(null);
+    }
+  };
+
+  const handleRunMixScore = () => {
+    if (mixItems.length === 0) {
+      onTriggerToast?.('Vui lòng chọn ít nhất 1 món đồ từ tủ đồ của bạn!', 'warning');
+      return;
+    }
+    setIsMixScoring(true);
+    setTimeout(() => {
+      const res = communityOutfitService.scoreOutfit({
+        items: mixItems,
+        contextLabel: mixContext.label,
+        userNotes: mixTitle
+      });
+      setMixScoreResult(res);
+      setIsMixScoring(false);
+      onTriggerToast?.(`✨ AI Stylist đã chấm xong: ${res.score}/10!`, 'success');
+    }, 700);
+  };
+
+  const handlePublishMixPost = () => {
+    if (mixItems.length === 0) {
+      onTriggerToast?.('Vui lòng chọn món đồ trước khi đăng!', 'warning');
+      return;
+    }
+
+    const finalScoreResult = mixScoreResult || communityOutfitService.scoreOutfit({
+      items: mixItems,
+      contextLabel: mixContext.label,
+      userNotes: mixTitle
+    });
+
+    const firstImg = mixItems[0]?.imageUrl || mixItems[0]?.image_url || CURATED_PRESETS[0].imageUrl;
+
+    communityOutfitService.createPost({
+      authorName: user?.name || 'Nguyễn Văn An',
+      authorEmail: user?.email || 'an.nguyen@gmail.com',
+      isPro: user?.plan === 'PRO',
+      title: mixTitle.trim() || `Set phối đồ ${mixContext.label} từ tủ cá nhân`,
+      context: `${mixContext.icon} ${mixContext.label}`,
+      imageUrl: firstImg,
+      outfitItems: mixItems,
+      score: finalScoreResult.score,
+      breakdown: finalScoreResult.breakdown,
+      aiReview: finalScoreResult.aiReview,
+      aiTip: finalScoreResult.aiTip
+    });
+
+    setIsMixModalOpen(false);
+    onTriggerToast?.('🎉 Đã đăng bộ đồ lên Cộng đồng thành công! Đang chuyển đến Bảng tin...', 'success');
+    if (onNavigateCommunity) {
+      setTimeout(() => onNavigateCommunity(), 650);
+    }
+  };
 
   // Filter items
   const filteredItems = wardrobe.filter(item => {
@@ -178,6 +267,30 @@ export default function WardrobeView({
           </button>
 
           <button
+            type="button"
+            className="btn-mix-match-action"
+            onClick={() => handleOpenMixModal()}
+            style={{
+              background: 'linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%)',
+              color: '#FFFFFF',
+              border: 'none',
+              borderRadius: 'var(--radius-full)',
+              padding: '0.65rem 1.25rem',
+              fontSize: '0.88rem',
+              fontWeight: 700,
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.45rem',
+              boxShadow: '0 4px 14px rgba(124, 58, 237, 0.35)',
+              transition: 'all 0.2s ease'
+            }}
+            title="Tự phối đồ từ các món trong tủ và đăng lên cộng đồng để nhận đánh giá, bình luận"
+          >
+            <span>✨ Tự Phối Đồ & Đăng</span>
+          </button>
+
+          <button
             className="btn-add-item-primary"
             onClick={handleOpenAddModal}
           >
@@ -321,6 +434,13 @@ export default function WardrobeView({
                 />
                 <span className="item-category-badge">{item.category}</span>
                 <div className="item-actions-hover">
+                  <button
+                    className="action-circle-btn mix"
+                    onClick={() => handleOpenMixModal(item)}
+                    title="Chọn món này để bắt đầu tự phối đồ"
+                  >
+                    ✨
+                  </button>
                   <button
                     className="action-circle-btn edit"
                     onClick={() => handleOpenEditModal(item)}
@@ -525,6 +645,191 @@ export default function WardrobeView({
               >
                 Xác nhận xóa
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* ========================================================= */}
+      {/* 6. MODAL: STUDIO TỰ PHỐI ĐỒ CÁ NHÂN & ĐĂNG CỘNG ĐỒNG     */}
+      {/* ========================================================= */}
+      {isMixModalOpen && (
+        <div className="modal-backdrop-blur" onClick={() => setIsMixModalOpen(false)}>
+          <div className="rater-modal-box" onClick={e => e.stopPropagation()}>
+            <div className="rater-modal-header">
+              <div className="header-titles">
+                <span className="modal-super-title">STUDIO TỰ PHỐI ĐỒ CÁ NHÂN</span>
+                <h2 className="modal-title">Tự Phối Đồ & Đăng Lên Cộng Đồng</h2>
+              </div>
+              <button
+                className="btn-close-modal"
+                onClick={() => setIsMixModalOpen(false)}
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="rater-modal-body">
+              {/* 1. Chọn Hoàn Cảnh */}
+              <div className="rater-form-section">
+                <label className="section-label">1. Hoàn cảnh mặc đồ:</label>
+                <div className="contexts-selector-grid">
+                  {OUTFIT_CONTEXTS.map((ctx) => (
+                    <button
+                      key={ctx.id}
+                      type="button"
+                      className={`context-btn-chip ${mixContext.id === ctx.id ? 'active' : ''}`}
+                      onClick={() => setMixContext(ctx)}
+                    >
+                      <span className="ctx-icon">{ctx.icon}</span>
+                      <span>{ctx.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 2. Chọn các món từ Tủ đồ */}
+              <div className="rater-form-section">
+                <div className="label-with-hint">
+                  <label className="section-label">2. Chọn món đồ từ Tủ đồ số của bạn ({mixItems.length}/4 món):</label>
+                  <span className="section-hint">Tối đa 4 món cho 1 outfit</span>
+                </div>
+
+                {wardrobe.length === 0 ? (
+                  <p className="item-notes-placeholder">Tủ đồ trống. Hãy thêm món đồ trước khi phối!</p>
+                ) : (
+                  <div className="wardrobe-picker-grid">
+                    {wardrobe.map((item) => {
+                      const isPicked = mixItems.some((i) => i.id === item.id);
+                      return (
+                        <div
+                          key={item.id}
+                          className={`wardrobe-pick-card ${isPicked ? 'picked' : ''}`}
+                          onClick={() => handleToggleMixItem(item)}
+                        >
+                          <img
+                            src={item.imageUrl || item.image_url}
+                            alt={item.name}
+                            className="pick-item-img"
+                          />
+                          <div className="pick-item-info">
+                            <span className="pick-item-name">{item.name}</span>
+                            <span className="pick-item-cat">{item.category} • {item.color}</span>
+                          </div>
+                          {isPicked && <span className="check-badge">✓</span>}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {/* 3. Tiêu đề / Lời tựa */}
+              <div className="rater-form-section">
+                <label className="section-label">3. Lời tựa / Chia sẻ của bạn về bộ đồ này:</label>
+                <input
+                  type="text"
+                  className="input-text-dark"
+                  placeholder="Ví dụ: Set đồ tự phối đi cafe phố cổ sáng Chủ Nhật, mọi người thấy có hợp không?..."
+                  value={mixTitle}
+                  onChange={(e) => setMixTitle(e.target.value)}
+                />
+              </div>
+
+              {/* Nút Chấm điểm AI */}
+              <div className="rater-action-center">
+                <button
+                  type="button"
+                  className="btn-trigger-ai-score"
+                  onClick={handleRunMixScore}
+                  disabled={isMixScoring || mixItems.length === 0}
+                >
+                  {isMixScoring ? (
+                    <span>⏳ AI Stylist đang chấm điểm màu sắc & tỉ lệ...</span>
+                  ) : (
+                    <span>✨ AI Stylist Chấm Điểm Phối Đồ</span>
+                  )}
+                </button>
+              </div>
+
+              {/* Kết quả chấm điểm AI (nếu có) */}
+              {mixScoreResult && (
+                <div className="score-result-card animate-fade-in">
+                  <div className="score-main-display">
+                    <div className="score-circle-badge">
+                      <span className="circle-score-val">{mixScoreResult.score}</span>
+                      <span className="circle-score-unit">/10</span>
+                    </div>
+                    <div className="score-heading-text">
+                      <h4>
+                        {mixScoreResult.score >= 9.0
+                          ? '🌟 Đạt Chuẩn Xuất Sắc!'
+                          : mixScoreResult.score >= 8.0
+                          ? '✨ Rất Đẹp & Có Gu'
+                          : '💡 Khá Ổn, Cần Chút Tinh Chỉnh'}
+                      </h4>
+                      <p>{mixScoreResult.aiReview}</p>
+                    </div>
+                  </div>
+
+                  <div className="score-breakdown-bars">
+                    <div className="bar-item">
+                      <div className="bar-labels">
+                        <span>Hòa hợp màu sắc</span>
+                        <strong>{mixScoreResult.breakdown.colorHarmony}/10</strong>
+                      </div>
+                      <div className="bar-track">
+                        <div
+                          className="bar-fill"
+                          style={{ width: `${(mixScoreResult.breakdown.colorHarmony / 10) * 100}%` }}
+                        ></div>
+                      </div>
+                    </div>
+
+                    <div className="bar-item">
+                      <div className="bar-labels">
+                        <span>Tỷ lệ vóc dáng & Form</span>
+                        <strong>{mixScoreResult.breakdown.proportions}/10</strong>
+                      </div>
+                      <div className="bar-track">
+                        <div
+                          className="bar-fill"
+                          style={{ width: `${(mixScoreResult.breakdown.proportions / 10) * 100}%` }}
+                        ></div>
+                      </div>
+                    </div>
+
+                    <div className="bar-item">
+                      <div className="bar-labels">
+                        <span>Độ phù hợp hoàn cảnh</span>
+                        <strong>{mixScoreResult.breakdown.versatility}/10</strong>
+                      </div>
+                      <div className="bar-track">
+                        <div
+                          className="bar-fill"
+                          style={{ width: `${(mixScoreResult.breakdown.versatility / 10) * 100}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="ai-tip-box-highlight">
+                    <strong>💡 Mẹo nâng cấp từ Stylist:</strong> {mixScoreResult.aiTip}
+                  </div>
+                </div>
+              )}
+
+              {/* Nút Đăng lên Cộng đồng */}
+              <div className="publish-confirm-footer" style={{ marginTop: '10px' }}>
+                <button
+                  type="button"
+                  className="btn-publish-to-community"
+                  onClick={handlePublishMixPost}
+                  disabled={mixItems.length === 0}
+                  style={{ width: '100%', padding: '0.9rem', fontSize: '1rem' }}
+                >
+                  📢 Đăng Lên Cộng Đồng Để Nhận Bình Luận & Góp Ý
+                </button>
+              </div>
             </div>
           </div>
         </div>
