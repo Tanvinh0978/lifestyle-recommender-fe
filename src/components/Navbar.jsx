@@ -48,7 +48,7 @@ export default function Navbar({ activeTab, setActiveTab, user, wardrobeCount, o
               className={`nav-tab-btn ${activeTab === 'community' ? 'active' : ''}`}
               onClick={() => setActiveTab('community')}
             >
-              <span>Chấm điểm & Cộng đồng</span>
+              <span>Cộng đồng OOTD</span>
               <span className="badge-promo-tag" style={{ background: '#EDE9FE', color: '#7C3AED' }}>Mới</span>
             </button>
 

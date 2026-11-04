@@ -108,10 +108,16 @@ export default function CommunityOutfitFeedView({
 
   // Đăng lên Cộng đồng
   const handlePublishPost = () => {
-    if (!scoreResult) {
-      onTriggerToast?.('Vui lòng bấm chấm điểm trước khi đăng!', 'warning');
+    if (selectedItems.length === 0 && !customImageUrl.trim()) {
+      onTriggerToast?.('Vui lòng chọn ít nhất 1 món đồ từ tủ đồ hoặc nhập link ảnh!', 'warning');
       return;
     }
+
+    const advice = scoreResult || communityOutfitService.scoreOutfit({
+      items: selectedItems,
+      contextLabel: selectedContext.label,
+      customImageUrl: customImageUrl.trim()
+    });
 
     const finalImage =
       customImageUrl.trim() ||
@@ -127,10 +133,10 @@ export default function CommunityOutfitFeedView({
       context: `${selectedContext.icon} ${selectedContext.label}`,
       imageUrl: finalImage,
       outfitItems: selectedItems,
-      score: scoreResult.score,
-      breakdown: scoreResult.breakdown,
-      aiReview: scoreResult.aiReview,
-      aiTip: scoreResult.aiTip
+      score: advice.score,
+      breakdown: advice.breakdown,
+      aiReview: advice.aiReview,
+      aiTip: advice.aiTip
     });
 
     setPosts(communityOutfitService.getPosts());
@@ -139,13 +145,13 @@ export default function CommunityOutfitFeedView({
     setScoreResult(null);
     setPostTitle('');
     setCustomImageUrl('');
-    onTriggerToast?.('🎉 Đã đăng bộ đồ lên Cộng đồng thành công!', 'success');
+    onTriggerToast?.('🎉 Đã đăng bộ đồ lên Cộng đồng thành công! Mọi người có thể thả tim và bình luận.', 'success');
   };
 
   // Lọc bài viết
   const filteredPosts = useMemo(() => {
     if (activeFilter === 'top') {
-      return [...posts].filter((p) => p.score >= 9.0).sort((a, b) => b.score - a.score);
+      return [...posts].sort((a, b) => (b.likesCount || 0) - (a.likesCount || 0));
     }
     if (activeFilter === 'mine') {
       const myEmail = user?.email || 'an.nguyen@gmail.com';
@@ -164,13 +170,13 @@ export default function CommunityOutfitFeedView({
         <div className="community-hero-content">
           <div className="community-badge-pill">
             <span className="sparkle-icon">✨</span>
-            <span>TÍNH NĂNG MỚI: AI OUTFIT RATER & COMMUNITY</span>
+            <span>CỘNG ĐỒNG THỜI TRANG & PHONG CÁCH OOTD</span>
           </div>
           <h1 className="community-main-title">
-            Cộng Đồng Phối Đồ & Chấm Điểm AI
+            Cộng Đồng Phối Đồ & Chia Sẻ OOTD
           </h1>
           <p className="community-sub-desc">
-            Nhận phân tích tỷ lệ vóc dáng, bảng màu từ AI Stylist và cùng trao đổi, nhận góp ý từ cộng đồng thời trang Wearwell.
+            Khám phá các phong cách phối đồ thời thượng, thả tim ❤️ và cùng trao đổi, nhận góp ý từ cộng đồng thời trang Wearwell.
           </p>
 
           <div className="community-hero-actions">
@@ -182,7 +188,7 @@ export default function CommunityOutfitFeedView({
               }}
             >
               <span className="btn-icon">⚡</span>
-              <span>Chấm Điểm Bộ Đồ Của Bạn</span>
+              <span>Đăng Bài Phối Đồ Mới</span>
             </button>
             <div className="community-stat-counter">
               <span>🔥 {posts.length} Bộ phối đang trao đổi sôi nổi</span>
@@ -203,7 +209,7 @@ export default function CommunityOutfitFeedView({
           className={`filter-pill-btn ${activeFilter === 'top' ? 'active' : ''}`}
           onClick={() => setActiveFilter('top')}
         >
-          ⭐ Điểm cao (9.0+)
+          ❤️ Yêu thích nhất
         </button>
         <button
           className={`filter-pill-btn ${activeFilter === 'mine' ? 'active' : ''}`}
@@ -255,14 +261,9 @@ export default function CommunityOutfitFeedView({
                 <div className="post-context-badge">{post.context}</div>
               </div>
 
-              {/* Outfit Image & Score Badge */}
+              {/* Outfit Image */}
               <div className="post-image-container">
                 <img src={post.imageUrl} alt={post.title} className="post-outfit-img" />
-                <div className="post-ai-score-badge">
-                  <span className="score-star">⭐</span>
-                  <span className="score-number">{post.score}</span>
-                  <span className="score-max">/10</span>
-                </div>
               </div>
 
               {/* Title & Items */}
@@ -279,38 +280,22 @@ export default function CommunityOutfitFeedView({
                   </div>
                 )}
 
-                {/* AI Stylist Review Box */}
-                <div className="post-ai-analysis-box">
-                  <div className="ai-analysis-header">
-                    <span className="ai-robot-icon">✨</span>
-                    <span className="ai-header-title">Đánh giá từ AI Stylist:</span>
+                {/* Stylist Advice Box (không hiển thị rating điểm số) */}
+                {(post.aiReview || post.aiTip) && (
+                  <div className="post-ai-analysis-box">
+                    <div className="ai-analysis-header">
+                      <span className="ai-robot-icon">✨</span>
+                      <span className="ai-header-title">Góc tư vấn Stylist:</span>
+                    </div>
+                    {post.aiReview && <p className="ai-review-text">{post.aiReview}</p>}
+                    {post.aiTip && (
+                      <div className="ai-tip-row">
+                        <span className="ai-tip-badge">Mẹo Stylist</span>
+                        <span className="ai-tip-text">{post.aiTip}</span>
+                      </div>
+                    )}
                   </div>
-                  <p className="ai-review-text">{post.aiReview}</p>
-                  {post.aiTip && (
-                    <div className="ai-tip-row">
-                      <span className="ai-tip-badge">Mẹo Stylist</span>
-                      <span className="ai-tip-text">{post.aiTip}</span>
-                    </div>
-                  )}
-
-                  {/* 3 mini score metrics */}
-                  {post.breakdown && (
-                    <div className="breakdown-metrics-row">
-                      <div className="metric-pill">
-                        <span className="metric-label">Màu sắc:</span>
-                        <span className="metric-val">{post.breakdown.colorHarmony}/10</span>
-                      </div>
-                      <div className="metric-pill">
-                        <span className="metric-label">Tỷ lệ:</span>
-                        <span className="metric-val">{post.breakdown.proportions}/10</span>
-                      </div>
-                      <div className="metric-pill">
-                        <span className="metric-label">Hoàn cảnh:</span>
-                        <span className="metric-val">{post.breakdown.versatility}/10</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
+                )}
 
                 {/* Interaction Action Bar */}
                 <div className="post-action-bar">
@@ -388,14 +373,14 @@ export default function CommunityOutfitFeedView({
         })}
       </div>
 
-      {/* 4. MODAL: AI OUTFIT RATER STUDIO */}
+      {/* 4. MODAL: OUTFIT STUDIO */}
       {isRaterModalOpen && (
         <div className="modal-backdrop-blur">
           <div className="rater-modal-box">
             <div className="rater-modal-header">
               <div className="header-titles">
-                <span className="modal-super-title">AI OUTFIT RATER STUDIO</span>
-                <h2 className="modal-title">Chấm Điểm Phối Đồ & Nhận Góp Ý</h2>
+                <span className="modal-super-title">COMMUNITY OUTFIT STUDIO</span>
+                <h2 className="modal-title">Đăng Bài Phối Đồ OOTD & Nhận Góp Ý</h2>
               </div>
               <button
                 className="btn-close-modal"
@@ -489,7 +474,7 @@ export default function CommunityOutfitFeedView({
                 />
               </div>
 
-              {/* Nút bấm Kích hoạt AI Chấm điểm */}
+              {/* Nút bấm Tư vấn AI Stylist */}
               <div className="rater-action-center">
                 <button
                   type="button"
@@ -498,89 +483,37 @@ export default function CommunityOutfitFeedView({
                   disabled={isScoring}
                 >
                   {isScoring ? (
-                    <span>⏳ AI Stylist đang phân tích màu sắc & tỉ lệ...</span>
+                    <span>⏳ AI Stylist đang phân tích độ hòa hợp...</span>
                   ) : (
-                    <span>✨ Phân Tích & Chấm Điểm Ngay</span>
+                    <span>✨ Tham khảo tư vấn từ AI Stylist</span>
                   )}
                 </button>
               </div>
 
-              {/* KẾT QUẢ CHẤM ĐIỂM CỦA AI */}
+              {/* Gợi ý Stylist (không hiển thị rating điểm số) */}
               {scoreResult && (
                 <div className="score-result-card animate-fade-in">
-                  <div className="score-main-display">
-                    <div className="score-circle-badge">
-                      <span className="circle-score-val">{scoreResult.score}</span>
-                      <span className="circle-score-unit">/10</span>
-                    </div>
-                    <div className="score-heading-text">
-                      <h4>
-                        {scoreResult.score >= 9.0
-                          ? '🌟 Đạt Chuẩn Xuất Sắc!'
-                          : scoreResult.score >= 8.0
-                          ? '✨ Rất Đẹp & Có Gu'
-                          : '💡 Khá Ổn, Cần Chút Tinh Chỉnh'}
-                      </h4>
-                      <p>{scoreResult.aiReview}</p>
-                    </div>
-                  </div>
-
-                  <div className="score-breakdown-bars">
-                    <div className="bar-item">
-                      <div className="bar-labels">
-                        <span>Hòa hợp màu sắc</span>
-                        <strong>{scoreResult.breakdown.colorHarmony}/10</strong>
-                      </div>
-                      <div className="bar-track">
-                        <div
-                          className="bar-fill"
-                          style={{ width: `${(scoreResult.breakdown.colorHarmony / 10) * 100}%` }}
-                        ></div>
-                      </div>
-                    </div>
-
-                    <div className="bar-item">
-                      <div className="bar-labels">
-                        <span>Tỷ lệ vóc dáng & Form</span>
-                        <strong>{scoreResult.breakdown.proportions}/10</strong>
-                      </div>
-                      <div className="bar-track">
-                        <div
-                          className="bar-fill"
-                          style={{ width: `${(scoreResult.breakdown.proportions / 10) * 100}%` }}
-                        ></div>
-                      </div>
-                    </div>
-
-                    <div className="bar-item">
-                      <div className="bar-labels">
-                        <span>Độ phù hợp hoàn cảnh</span>
-                        <strong>{scoreResult.breakdown.versatility}/10</strong>
-                      </div>
-                      <div className="bar-track">
-                        <div
-                          className="bar-fill"
-                          style={{ width: `${(scoreResult.breakdown.versatility / 10) * 100}%` }}
-                        ></div>
-                      </div>
-                    </div>
+                  <div className="score-heading-text">
+                    <h4>💡 Nhận xét từ Stylist AI:</h4>
+                    <p>{scoreResult.aiReview}</p>
                   </div>
 
                   <div className="ai-tip-box-highlight">
-                    <strong>💡 Mẹo nâng cấp từ Stylist:</strong> {scoreResult.aiTip}
-                  </div>
-
-                  <div className="publish-confirm-footer">
-                    <button
-                      type="button"
-                      className="btn-publish-to-community"
-                      onClick={handlePublishPost}
-                    >
-                      📢 Đăng Lên Cộng Đồng Để Nhận Bình Luận
-                    </button>
+                    <strong>✨ Mẹo nâng tầm phối đồ:</strong> {scoreResult.aiTip}
                   </div>
                 </div>
               )}
+
+              <div className="publish-confirm-footer">
+                <button
+                  type="button"
+                  className="btn-publish-to-community"
+                  onClick={handlePublishPost}
+                  style={{ width: '100%', padding: '0.9rem', fontSize: '1rem' }}
+                >
+                  📢 Đăng Lên Cộng Đồng (Nhận Thả Tim ❤️ & Bình Luận)
+                </button>
+              </div>
             </div>
           </div>
         </div>

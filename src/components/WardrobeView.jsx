@@ -14,7 +14,6 @@ export default function WardrobeView({
   onNavigateCommunity
 }) {
   const [selectedCategory, setSelectedCategory] = useState('Tất cả');
-  const [selectedColor, setSelectedColor] = useState('Tất cả');
   const [searchQuery, setSearchQuery] = useState('');
   const [isSyncing, setIsSyncing] = useState(false);
   
@@ -125,11 +124,10 @@ export default function WardrobeView({
   // Filter items
   const filteredItems = wardrobe.filter(item => {
     const matchCategory = selectedCategory === 'Tất cả' || item.category === selectedCategory;
-    const matchColor = selectedColor === 'Tất cả' || item.color === selectedColor;
     const matchSearch = !searchQuery.trim() || 
       item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (item.notes && item.notes.toLowerCase().includes(searchQuery.toLowerCase()));
-    return matchCategory && matchColor && matchSearch;
+    return matchCategory && matchSearch;
   });
 
   const handleOpenAddModal = () => {
@@ -379,34 +377,6 @@ export default function WardrobeView({
             );
           })}
         </div>
-
-        {/* Color Filters */}
-        <div className="color-filters-row">
-          <span className="color-filter-label">Màu sắc:</span>
-          <button
-            className={`color-filter-pill ${selectedColor === 'Tất cả' ? 'active' : ''}`}
-            onClick={() => setSelectedColor('Tất cả')}
-          >
-            Tất cả màu
-          </button>
-          {POPULAR_COLORS.map(c => (
-            <button
-              key={c.name}
-              className={`color-filter-dot-btn ${selectedColor === c.name ? 'active' : ''}`}
-              onClick={() => setSelectedColor(selectedColor === c.name ? 'Tất cả' : c.name)}
-              title={c.name}
-            >
-              <span
-                className="color-dot"
-                style={{
-                  backgroundColor: c.hex,
-                  border: c.border ? '1px solid #ccc' : 'none'
-                }}
-              ></span>
-              <span className="color-name-text">{c.name}</span>
-            </button>
-          ))}
-        </div>
       </div>
 
       {/* ========================================================= */}
@@ -554,24 +524,20 @@ export default function WardrobeView({
               <div className="form-row-2col">
                 <div className="form-field">
                   <label className="form-label">Phân loại trang phục <span className="req">*</span></label>
-                  <input
-                    type="text"
-                    list="wardrobe-categories-list"
-                    className="form-text-input"
-                    placeholder="Ví dụ: Áo, Quần âu, Váy dạ hội, Giày..."
+                  <select
+                    className="form-select-input"
                     value={formCategory}
                     onChange={e => setFormCategory(e.target.value)}
                     required
-                  />
-                  <datalist id="wardrobe-categories-list">
-                    <option value="Áo" />
-                    <option value="Quần/Váy" />
-                    <option value="Giày dép" />
-                    <option value="Phụ kiện" />
-                    <option value="Áo khoác" />
-                    <option value="Váy liền thân" />
-                  </datalist>
-                  <span className="field-hint-micro">💡 Bạn có thể tự gõ loại trang phục bất kỳ</span>
+                  >
+                    <option value="Áo">👕 Áo (Tops, Sơ mi, Phông, Polo, Blazer...)</option>
+                    <option value="Quần/Váy">👖 Quần & Váy (Bottoms, Jeans, Quần âu, Chân váy...)</option>
+                    <option value="Giày dép">👟 Giày dép (Sneakers, Loafers, Giày tây, Cao gót...)</option>
+                    <option value="Phụ kiện">🕶️ Phụ kiện (Túi xách, Đồng hồ, Thắt lưng, Mũ, Kính...)</option>
+                    <option value="Áo khoác">🧥 Áo khoác (Cardigan, Trench coat, Jacket, Phao...)</option>
+                    <option value="Váy liền thân">👗 Váy liền thân (Đầm dạ hội, Đầm xòe, Maxi...)</option>
+                  </select>
+                  <span className="field-hint-micro">💡 Chọn danh mục để AI Stylist phân loại trang phục chuẩn xác</span>
                 </div>
 
                 <div className="form-field">
@@ -735,7 +701,7 @@ export default function WardrobeView({
                 />
               </div>
 
-              {/* Nút Chấm điểm AI */}
+              {/* Nút Xem Gợi ý AI Stylist */}
               <div className="rater-action-center">
                 <button
                   type="button"
@@ -744,76 +710,23 @@ export default function WardrobeView({
                   disabled={isMixScoring || mixItems.length === 0}
                 >
                   {isMixScoring ? (
-                    <span>⏳ AI Stylist đang chấm điểm màu sắc & tỉ lệ...</span>
+                    <span>⏳ AI Stylist đang phân tích độ hòa hợp...</span>
                   ) : (
-                    <span>✨ AI Stylist Chấm Điểm Phối Đồ</span>
+                    <span>✨ Tham khảo tư vấn từ AI Stylist</span>
                   )}
                 </button>
               </div>
 
-              {/* Kết quả chấm điểm AI (nếu có) */}
+              {/* Lời khuyên Stylist (không hiển thị điểm số rating cứng nhắc) */}
               {mixScoreResult && (
                 <div className="score-result-card animate-fade-in">
-                  <div className="score-main-display">
-                    <div className="score-circle-badge">
-                      <span className="circle-score-val">{mixScoreResult.score}</span>
-                      <span className="circle-score-unit">/10</span>
-                    </div>
-                    <div className="score-heading-text">
-                      <h4>
-                        {mixScoreResult.score >= 9.0
-                          ? '🌟 Đạt Chuẩn Xuất Sắc!'
-                          : mixScoreResult.score >= 8.0
-                          ? '✨ Rất Đẹp & Có Gu'
-                          : '💡 Khá Ổn, Cần Chút Tinh Chỉnh'}
-                      </h4>
-                      <p>{mixScoreResult.aiReview}</p>
-                    </div>
-                  </div>
-
-                  <div className="score-breakdown-bars">
-                    <div className="bar-item">
-                      <div className="bar-labels">
-                        <span>Hòa hợp màu sắc</span>
-                        <strong>{mixScoreResult.breakdown.colorHarmony}/10</strong>
-                      </div>
-                      <div className="bar-track">
-                        <div
-                          className="bar-fill"
-                          style={{ width: `${(mixScoreResult.breakdown.colorHarmony / 10) * 100}%` }}
-                        ></div>
-                      </div>
-                    </div>
-
-                    <div className="bar-item">
-                      <div className="bar-labels">
-                        <span>Tỷ lệ vóc dáng & Form</span>
-                        <strong>{mixScoreResult.breakdown.proportions}/10</strong>
-                      </div>
-                      <div className="bar-track">
-                        <div
-                          className="bar-fill"
-                          style={{ width: `${(mixScoreResult.breakdown.proportions / 10) * 100}%` }}
-                        ></div>
-                      </div>
-                    </div>
-
-                    <div className="bar-item">
-                      <div className="bar-labels">
-                        <span>Độ phù hợp hoàn cảnh</span>
-                        <strong>{mixScoreResult.breakdown.versatility}/10</strong>
-                      </div>
-                      <div className="bar-track">
-                        <div
-                          className="bar-fill"
-                          style={{ width: `${(mixScoreResult.breakdown.versatility / 10) * 100}%` }}
-                        ></div>
-                      </div>
-                    </div>
+                  <div className="score-heading-text">
+                    <h4>💡 Nhận xét từ Stylist AI:</h4>
+                    <p>{mixScoreResult.aiReview}</p>
                   </div>
 
                   <div className="ai-tip-box-highlight">
-                    <strong>💡 Mẹo nâng cấp từ Stylist:</strong> {mixScoreResult.aiTip}
+                    <strong>✨ Mẹo nâng tầm phối đồ:</strong> {mixScoreResult.aiTip}
                   </div>
                 </div>
               )}
@@ -827,7 +740,7 @@ export default function WardrobeView({
                   disabled={mixItems.length === 0}
                   style={{ width: '100%', padding: '0.9rem', fontSize: '1rem' }}
                 >
-                  📢 Đăng Lên Cộng Đồng Để Nhận Bình Luận & Góp Ý
+                  📢 Đăng Lên Cộng Đồng (Nhận Thả Tim ❤️ & Bình Luận)
                 </button>
               </div>
             </div>

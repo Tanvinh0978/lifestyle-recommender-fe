@@ -421,9 +421,9 @@ export default function StylistView({
                 boxShadow: '0 4px 14px rgba(124, 58, 237, 0.35)',
                 fontWeight: 700
               }}
-              title="Đăng bộ đồ này lên Cộng đồng để mọi người cùng đánh giá và bình luận"
+              title="Đăng bộ đồ này lên Cộng đồng để mọi người cùng xem, thả tim và bình luận"
             >
-              <span>📢 Đăng lên Cộng đồng ({outfitResult.harmonyScore || 96}đ)</span>
+              <span>📢 Đăng lên Cộng đồng (Nhận Thả Tim ❤️ & Góp Ý)</span>
             </button>
 
             <button
