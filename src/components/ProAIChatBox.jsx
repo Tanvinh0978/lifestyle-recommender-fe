@@ -65,7 +65,7 @@ export default function ProAIChatBox({ user, wardrobe = [], onTriggerToast, init
     {
       id: 'm_welcome',
       sender: 'ai',
-      text: `Xin chào **${user?.name || 'bạn'}**! 👑 Tôi là Trợ lý AI Độc quyền của **Wearwell PRO VIP**.\n\nTôi được thiết kế để kết nối toàn diện giữa **Thời trang (Fashion)** và **Sức khỏe & Vóc dáng (Wellness)**:\n- 🥗 **Thực đơn dinh dưỡng** thâm hụt calo, Eat Clean chuẩn thể trạng\n- 🧘 **Bài tập Gym, Cardio & các chuỗi động tác Yoga** siết cơ đốt mỡ\n- 👗 **Mẹo phối đồ hack dáng** giúp bạn luôn tự tin tỏa sáng ngay cả trong quá trình cải thiện vóc dáng!\n\n*Bạn hãy thoải mái hỏi mọi thắc mắc hoặc click các gợi ý bên dưới nhé!*`,
+      text: `Xin chào **${user?.name || 'bạn'}**! 👑 Tôi là Trợ lý AI Độc quyền của **Wearwell VIP**.\n\nTôi được thiết kế để kết nối toàn diện giữa **Thời trang (Fashion)** và **Sức khỏe & Vóc dáng (Wellness)**:\n- 🥗 **Thực đơn dinh dưỡng** thâm hụt calo, Eat Clean chuẩn thể trạng\n- 🧘 **Bài tập Gym, Cardio & các chuỗi động tác Yoga** siết cơ đốt mỡ\n- 👗 **Mẹo phối đồ hack dáng** giúp bạn luôn tự tin tỏa sáng ngay cả trong quá trình cải thiện vóc dáng!\n\n*Bạn hãy thoải mái hỏi mọi thắc mắc hoặc click các gợi ý bên dưới nhé!*`,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
@@ -149,7 +149,7 @@ export default function ProAIChatBox({ user, wardrobe = [], onTriggerToast, init
           <div>
             <div className="chat-title-row">
               <h4>Wearwell AI Advisor</h4>
-              <span className="badge-vip-live">PRO VIP 24/7</span>
+              <span className="badge-vip-live">VIP 24/7</span>
             </div>
             <p className="chat-sub-hint">Trợ lý AI thời trang, thực đơn & thể lực trực tiếp theo hồ sơ ({user?.city || 'Hà Nội'})</p>
           </div>

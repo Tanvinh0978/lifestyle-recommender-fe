@@ -29,7 +29,7 @@ export default function NutritionFitnessView({
         onTriggerToast?.('📺 Bạn đã dùng hết lượt khởi đầu! Hãy xem 1 quảng cáo ngắn để nhận thêm lượt thực đơn/bài tập miễn phí.', 'info');
         onOpenAdModal?.();
       } else {
-        onTriggerToast?.('🔒 Bạn đã đạt tối đa 3 lượt quảng cáo hôm nay! Nâng cấp PRO VIP để tạo thực đơn & bài tập không giới hạn.', 'warning');
+        onTriggerToast?.('🔒 Bạn đã đạt tối đa 3 lượt quảng cáo hôm nay! Nâng cấp VIP để tạo thực đơn & bài tập không giới hạn.', 'warning');
         onNavigatePricing?.();
       }
       return;
@@ -81,7 +81,7 @@ export default function NutritionFitnessView({
         <div className="header-status-actions">
           <div className="quota-pill-status">
             <span className="lightning-icon">⚡</span>
-            <span>Hạn mức hôm nay: <strong>{isPro ? 'Không giới hạn (PRO VIP)' : `Còn ${remainingQuota} lượt`}</strong></span>
+            <span>Hạn mức hôm nay: <strong>{isPro ? 'Không giới hạn (VIP)' : `Còn ${remainingQuota} lượt`}</strong></span>
           </div>
 
           {!isPro && remainingAds > 0 && (

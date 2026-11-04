@@ -245,7 +245,7 @@ export default function CommunityOutfitFeedView({
                   <div className="post-author-meta">
                     <div className="author-name-group">
                       <span className="author-name">{post.authorName}</span>
-                      {post.isPro && <span className="badge-pro-inline">PRO VIP</span>}
+                      {post.isPro && <span className="badge-pro-inline">VIP</span>}
                     </div>
                     <span className="post-timestamp">
                       {new Date(post.createdAt).toLocaleDateString('vi-VN', {
@@ -329,7 +329,7 @@ export default function CommunityOutfitFeedView({
                           <div className="comment-content-wrap">
                             <div className="comment-header-meta">
                               <span className="comment-author-name">{c.authorName}</span>
-                              {c.isPro && <span className="comment-badge-pro">PRO VIP</span>}
+                              {c.isPro && <span className="comment-badge-pro">VIP</span>}
                               <span className="comment-time">
                                 {new Date(c.createdAt).toLocaleTimeString('vi-VN', {
                                   hour: '2-digit',

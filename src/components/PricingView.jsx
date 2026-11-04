@@ -59,7 +59,7 @@ export default function PricingView({
         setVerifiedTransactionId(result.transactionId);
         setPaymentState('SUCCESS');
         onUpgradeSuccess?.();
-        onTriggerToast?.('🎉 Xác thực thành công! Bạn đã được nâng cấp lên Gói PRO VIP toàn diện.');
+        onTriggerToast?.('🎉 Xác thực thành công! Bạn đã được nâng cấp lên Gói VIP toàn diện.');
       } else {
         setPaymentState('FAILED');
         setVerificationError(result.error || 'Chưa tìm thấy giao dịch ngân hàng khớp lệnh. Vui lòng kiểm tra lại!');
@@ -87,7 +87,7 @@ export default function PricingView({
           Đầu tư cho phong cách & sức khỏe đỉnh cao
         </h1>
         <p className="pricing-desc">
-          Bắt đầu miễn phí hoặc nâng cấp gói PRO VIP chỉ với <strong>49.000 VNĐ/tháng</strong> (~1.600đ/ngày) để mở khóa toàn bộ sức mạnh của AI Stylist & PT.
+          Bắt đầu miễn phí hoặc nâng cấp gói VIP chỉ với <strong>49.000 VNĐ/tháng</strong> (~1.600đ/ngày) để mở khóa toàn bộ sức mạnh của AI Stylist & PT.
         </p>
 
         {/* Toggle Billing cycle */}
@@ -148,11 +148,11 @@ export default function PricingView({
           </div>
         </div>
 
-        {/* PRO VIP CARD */}
+        {/* VIP CARD */}
         <div className={`pricing-card-glass pro-featured ${isPro ? 'current-plan' : ''}`}>
           <div className="pro-popular-ribbon">👑 ĐƯỢC ƯA CHUỘNG NHẤT</div>
           <div className="plan-card-header">
-            <span className="plan-badge-type vip">PRO VIP TỐI THƯỢNG</span>
+            <span className="plan-badge-type vip">VIP TỐI THƯỢNG</span>
             <h3 className="plan-name">{PLANS.PRO.name}</h3>
             <div className="plan-price-row">
               <span className="plan-amount">
@@ -179,14 +179,14 @@ export default function PricingView({
           <div className="plan-card-footer">
             {isPro ? (
               <button className="btn-plan-action current-vip" disabled>
-                👑 Đang sử dụng Gói PRO VIP
+                👑 Đang sử dụng Gói VIP
               </button>
             ) : (
               <button
                 className="btn-plan-action upgrade-glow"
                 onClick={handleOpenPayment}
               >
-                <span>⚡ Nâng cấp PRO VIP (49.000₫)</span>
+                <span>⚡ Nâng cấp VIP (49.000₫)</span>
                 <div className="shimmer-sweep"></div>
               </button>
             )}
@@ -202,7 +202,7 @@ export default function PricingView({
         <div className="trust-item">
           <span className="trust-icon">⚡</span>
           <h4>Kích hoạt tự động tức thì</h4>
-          <p>Hệ thống tự động kích hoạt tài khoản PRO ngay sau khi nhận tiền qua VietQR.</p>
+          <p>Hệ thống tự động kích hoạt tài khoản VIP ngay sau khi nhận tiền qua VietQR.</p>
         </div>
         <div className="trust-item">
           <span className="trust-icon">🛡️</span>
@@ -225,7 +225,7 @@ export default function PricingView({
             <div className="modal-header-row">
               <div className="modal-title-with-badge">
                 <span className="crown-mini">👑</span>
-                <h3>Thanh toán Gói PRO VIP qua VietQR</h3>
+                <h3>Thanh toán Gói VIP qua VietQR</h3>
               </div>
               <button className="modal-close-x" onClick={() => setIsQrModalOpen(false)}>✕</button>
             </div>
@@ -321,7 +321,7 @@ export default function PricingView({
                 <div className="success-icon-badge">🎉</div>
                 <h3>Xác thực thanh toán thành công!</h3>
                 <p className="success-sub">
-                  Chào mừng bạn đến với cộng đồng người dùng <strong>WEARWELL PRO VIP</strong>!
+                  Chào mừng bạn đến với cộng đồng người dùng <strong>WEARWELL VIP</strong>!
                 </p>
 
                 <div className="transaction-receipt-box">
@@ -331,7 +331,7 @@ export default function PricingView({
                   </div>
                   <div className="receipt-row">
                     <span>Gói đăng ký:</span>
-                    <strong>PRO VIP 1 Tháng</strong>
+                    <strong>VIP 1 Tháng</strong>
                   </div>
                   <div className="receipt-row">
                     <span>Số tiền xác nhận:</span>
@@ -347,7 +347,7 @@ export default function PricingView({
                   className="btn-start-using-pro"
                   onClick={() => setIsQrModalOpen(false)}
                 >
-                  🚀 Bắt đầu trải nghiệm PRO VIP ngay
+                  🚀 Bắt đầu trải nghiệm VIP ngay
                 </button>
               </div>
             )}

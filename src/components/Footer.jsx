@@ -61,7 +61,7 @@ export default function Footer({ setActiveTab, onOpenAdModal, user }) {
           <ul className="footer-list">
             <li>
               <button type="button" className="highlight-link" onClick={() => setActiveTab && setActiveTab('pricing')}>
-                Gói PRO VIP không giới hạn (49k)
+                Gói VIP không giới hạn (49k)
               </button>
             </li>
             <li>
@@ -94,7 +94,7 @@ export default function Footer({ setActiveTab, onOpenAdModal, user }) {
             <strong>Dự án Khởi nghiệp:</strong> EXE101 Project<br />
             <strong>Đội ngũ:</strong> Wearwell Innovators<br />
             <strong>Liên hệ:</strong> support@wearwell.ai<br />
-            <strong>Phiên bản:</strong> v2.4 PRO Edition
+            <strong>Phiên bản:</strong> v2.4 VIP Edition
           </p>
           <div className="footer-social-row">
             <span className="social-badge" title="Facebook">FB</span>

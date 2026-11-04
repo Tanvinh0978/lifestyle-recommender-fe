@@ -136,7 +136,7 @@ export default function LoginView({ onLogin, onDemoLogin, onBackToHome, onTrigge
               <div className="value-icon-box blue">👗</div>
               <div className="value-text">
                 <h4>Số hóa tủ đồ trong 1 chạm</h4>
-                <p>Lưu trữ hình ảnh trang phục không giới hạn với tài khoản PRO VIP.</p>
+                <p>Lưu trữ hình ảnh trang phục không giới hạn với tài khoản VIP.</p>
               </div>
             </div>
           </div>
@@ -150,7 +150,7 @@ export default function LoginView({ onLogin, onDemoLogin, onBackToHome, onTrigge
               <div className="author-avatar">ML</div>
               <div>
                 <strong>Mai Linh</strong>
-                <span>• Thành viên VIP PRO</span>
+                <span>• Thành viên VIP</span>
               </div>
             </div>
           </div>

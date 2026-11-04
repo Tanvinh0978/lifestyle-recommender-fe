@@ -28,7 +28,7 @@ export const PLANS = {
   },
   PRO: {
     id: 'PRO',
-    name: 'Gói PRO VIP Toàn Diện',
+    name: 'Gói VIP Toàn Diện',
     priceVnd: 49000,
     priceFormatted: '49.000₫',
     period: 'tháng (chỉ ~1.600đ/ngày)',

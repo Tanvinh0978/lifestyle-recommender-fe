@@ -118,7 +118,7 @@ export default function DashboardView({
                 <div className="btn-upgrade-left">
                   <span className="crown-icon">👑</span>
                   <span className="btn-upgrade-text">
-                    Nâng cấp PRO VIP chỉ 49.000đ/tháng
+                    Nâng cấp VIP chỉ 49.000đ/tháng
                   </span>
                 </div>
                 <div className="btn-upgrade-right">
@@ -147,7 +147,7 @@ export default function DashboardView({
             <div className="pro-badge-group">
               <span className="crown-vip">👑</span>
               <div>
-                <h4>Tài khoản PRO VIP đang kích hoạt</h4>
+                <h4>Tài khoản VIP đang kích hoạt</h4>
                 <p>Bạn đang sử dụng không giới hạn lượt AI, tủ đồ số không giới hạn và các phân tích chuyên sâu.</p>
               </div>
             </div>

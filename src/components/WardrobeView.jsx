@@ -132,7 +132,7 @@ export default function WardrobeView({
 
   const handleOpenAddModal = () => {
     if (isLimitReached) {
-      onTriggerToast?.('🔒 Tủ đồ bản FREE đã đạt giới hạn 8 món. Nâng cấp PRO VIP để mở khóa không giới hạn!', 'warning');
+      onTriggerToast?.('🔒 Tủ đồ bản FREE đã đạt giới hạn 8 món. Nâng cấp VIP để mở khóa không giới hạn!', 'warning');
       onNavigatePricing?.();
       return;
     }
@@ -303,7 +303,7 @@ export default function WardrobeView({
         <div className="quota-text-side">
           <div className="quota-status-badge">
             {isPro ? (
-              <span className="badge-vip-pill">👑 PRO VIP: KHÔNG GIỚI HẠN MÓN ĐỒ</span>
+              <span className="badge-vip-pill">👑 VIP: KHÔNG GIỚI HẠN MÓN ĐỒ</span>
             ) : (
               <span className="badge-free-pill">
                 FREE TIER: {currentCount} / 8 MÓN
@@ -314,7 +314,7 @@ export default function WardrobeView({
             {isPro
               ? 'Tài khoản VIP cho phép bạn tải lên và lưu trữ không giới hạn tủ đồ thời trang.'
               : currentCount >= 8
-              ? 'Bạn đã sử dụng hết 8/8 suất chứa đồ miễn phí. Nâng cấp PRO VIP để không bỏ lỡ bất kỳ bộ cánh nào!'
+              ? 'Bạn đã sử dụng hết 8/8 suất chứa đồ miễn phí. Nâng cấp VIP để không bỏ lỡ bất kỳ bộ cánh nào!'
               : `Bạn còn ${8 - currentCount} vị trí lưu trữ trang phục miễn phí hôm nay.`}
           </p>
         </div>

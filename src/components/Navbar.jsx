@@ -49,7 +49,6 @@ export default function Navbar({ activeTab, setActiveTab, user, wardrobeCount, o
               onClick={() => setActiveTab('community')}
             >
               <span>Cộng đồng OOTD</span>
-              <span className="badge-promo-tag" style={{ background: '#EDE9FE', color: '#7C3AED' }}>Mới</span>
             </button>
 
             <button
@@ -70,7 +69,7 @@ export default function Navbar({ activeTab, setActiveTab, user, wardrobeCount, o
               className={`nav-tab-btn vip-link ${activeTab === 'pricing' ? 'active' : ''}`}
               onClick={() => setActiveTab('pricing')}
             >
-              <span>Gói PRO VIP</span>
+              <span>Gói VIP</span>
               <span className="badge-promo-tag">49k</span>
             </button>
           </nav>
@@ -80,7 +79,7 @@ export default function Navbar({ activeTab, setActiveTab, user, wardrobeCount, o
             {user ? (
               <div className="user-status-pill">
                 {isPro ? (
-                  <span className="plan-badge-pro">PRO VIP</span>
+                  <span className="plan-badge-pro">VIP</span>
                 ) : (
                   <span className="plan-badge-free">FREE</span>
                 )}
@@ -108,7 +107,7 @@ export default function Navbar({ activeTab, setActiveTab, user, wardrobeCount, o
                     className="btn-quick-upgrade"
                     onClick={() => setActiveTab('pricing')}
                   >
-                    Nâng PRO
+                    Nâng VIP
                   </button>
                 )}
 
