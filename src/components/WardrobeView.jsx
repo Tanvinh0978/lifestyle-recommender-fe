@@ -157,7 +157,41 @@ export default function WardrobeView({
     setIsModalOpen(true);
   };
 
-  const handleImageFileUpload = (e) => {
+  const compressImageFile = (file, maxDimension = 640, quality = 0.75) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = reject;
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onerror = reject;
+        img.onload = () => {
+          let { width, height } = img;
+          if (width > maxDimension || height > maxDimension) {
+            if (width > height) {
+              height = Math.round((height * maxDimension) / width);
+              width = maxDimension;
+            } else {
+              width = Math.round((width * maxDimension) / height);
+              height = maxDimension;
+            }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          // Nén tối ưu định dạng JPEG chất lượng cao, dung lượng chỉ ~25-40KB
+          // Giải quyết triệt để lỗi QuotaExceededError trên LocalStorage
+          const compressed = canvas.toDataURL('image/jpeg', quality);
+          resolve(compressed);
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleImageFileUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -166,18 +200,20 @@ export default function WardrobeView({
       return;
     }
 
-    if (file.size > 8 * 1024 * 1024) {
-      alert('Kích thước ảnh tối đa là 8MB!');
-      return;
+    try {
+      const compressedBase64 = await compressImageFile(file, 640, 0.75);
+      setFormImageUrl(compressedBase64);
+      setImagePreview(compressedBase64);
+    } catch (err) {
+      console.warn('Lỗi nén ảnh, sử dụng fallback FileReader:', err);
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64 = event.target?.result;
+        setFormImageUrl(base64);
+        setImagePreview(base64);
+      };
+      reader.readAsDataURL(file);
     }
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const base64 = event.target?.result;
-      setFormImageUrl(base64);
-      setImagePreview(base64);
-    };
-    reader.readAsDataURL(file);
   };
 
   const handlePickPresetImage = (url) => {

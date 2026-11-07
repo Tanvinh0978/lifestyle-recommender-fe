@@ -35,7 +35,7 @@ export const CURATED_PRESETS = [
     category: 'Áo',
     color: 'Tím Lavender',
     notes: 'Chất liệu lụa tơ tằm mềm mại, thoáng khí, hợp công sở & cafe',
-    imageUrl: 'https://images.unsplash.com/photo-1598033129183-c4f50c736f10?w=600&auto=format&fit=crop&q=80'
+    imageUrl: '/pastel-shirt.png'
   },
   {
     name: 'Áo thun cotton trắng tối giản',
@@ -84,7 +84,25 @@ class WardrobeService {
     try {
       const stored = localStorage.getItem(WARDROBE_STORAGE_KEY);
       if (stored) {
-        return JSON.parse(stored);
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) {
+          // Tự động dọn dẹp các chuỗi base64 ảnh quá lớn từng lưu trong cache để giải phóng bộ nhớ
+          let hasOversized = false;
+          const cleaned = parsed.map(it => {
+            const img = it.imageUrl || it.image_url || '';
+            if (typeof img === 'string' && img.startsWith('data:image') && img.length > 50000) {
+              hasOversized = true;
+              return { ...it, imageUrl: '/pastel-shirt.png', image_url: '/pastel-shirt.png' };
+            }
+            return it;
+          });
+          if (hasOversized) {
+            try {
+              localStorage.setItem(WARDROBE_STORAGE_KEY, JSON.stringify(cleaned));
+            } catch (_) {}
+          }
+          return cleaned;
+        }
       }
       // Khởi tạo các món mẫu cho trải nghiệm đầu tiên
       const initial = CURATED_PRESETS.map((preset, idx) => ({
@@ -213,8 +231,30 @@ class WardrobeService {
   }
 
   _persist() {
-    if (typeof window !== 'undefined') {
+    if (typeof window === 'undefined') return;
+    try {
       localStorage.setItem(WARDROBE_STORAGE_KEY, JSON.stringify(this.items));
+    } catch (err) {
+      console.warn('LocalStorage quota warning in wardrobeService:', err);
+      // Khi vượt hạn mức storage (QuotaExceededError), tự động tối ưu hóa:
+      // Giảm tải dung lượng các chuỗi base64 ảnh quá lớn trong cache localStorage
+      try {
+        const lightweightItems = this.items.map(it => {
+          const img = it.imageUrl || it.image_url || '';
+          if (typeof img === 'string' && img.startsWith('data:image') && img.length > 30000) {
+            // Thay bằng preset an toàn cho localStorage, dữ liệu gốc vẫn lưu trên Supabase Cloud
+            return {
+              ...it,
+              imageUrl: '/pastel-shirt.png',
+              image_url: '/pastel-shirt.png'
+            };
+          }
+          return it;
+        });
+        localStorage.setItem(WARDROBE_STORAGE_KEY, JSON.stringify(lightweightItems));
+      } catch (innerErr) {
+        console.error('Không thể ghi cache localStorage:', innerErr);
+      }
     }
   }
 

@@ -153,8 +153,12 @@ export default function App({ initialTab = 'dashboard' }) {
       setWardrobe([...wardrobeService.getAllItems()]);
       triggerToast('✨ Đã thêm trang phục mới và đồng bộ Cloud!');
     } catch (err) {
-      triggerToast(err.message, 'warning');
-      setActiveTab('pricing');
+      if (err.message && (err.message.includes('giới hạn 8 món') || err.message.includes('đạt giới hạn'))) {
+        triggerToast(err.message, 'warning');
+        setActiveTab('pricing');
+      } else {
+        triggerToast('⚠️ Không thể lưu trang phục: ' + (err.message || 'Vui lòng thử lại.'), 'warning');
+      }
     }
   };
 
