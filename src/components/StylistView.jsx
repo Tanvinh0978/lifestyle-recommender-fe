@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { STYLIST_OCCASIONS, STYLIST_WEATHERS } from '../services/aiService.js';
+import { STYLIST_OCCASIONS, STYLIST_WEATHERS, FASHION_TRENDS } from '../services/aiService.js';
 import { communityOutfitService } from '../services/communityOutfitService.js';
 import ProAIChatBox from './ProAIChatBox.jsx';
 
@@ -18,6 +18,7 @@ export default function StylistView({
   const [selectedOccasion, setSelectedOccasion] = useState(STYLIST_OCCASIONS[0]);
   const [selectedWeather, setSelectedWeather] = useState(STYLIST_WEATHERS[1]); // Dịu mát
   const [prioritizeWardrobe, setPrioritizeWardrobe] = useState(true);
+  const [selectedTrend, setSelectedTrend] = useState(FASHION_TRENDS[0]);
   const [isOutfitSaved, setIsOutfitSaved] = useState(false);
   const [activeTabMode, setActiveTabMode] = useState('config'); // 'config' | 'chatbox'
 
@@ -40,6 +41,7 @@ export default function StylistView({
       occasion: selectedOccasion,
       weather: selectedWeather,
       prioritizeWardrobe,
+      selectedTrend,
       wardrobeItems: wardrobe,
       userGender: user?.gender || 'Nữ'
     });
@@ -253,12 +255,50 @@ export default function StylistView({
               <span className="mode-icon">✨</span>
               <div className="mode-text-wrap">
                 <strong className="mode-main-label">Phối Tự Do / Xu Hướng Mới</strong>
-                <span className="mode-sub-label">AI tự do sáng tạo outfit & gợi ý mua sắm</span>
+                <span className="mode-sub-label">AI sáng tạo theo hot trend & gợi ý đồ bên ngoài</span>
               </div>
               {!prioritizeWardrobe && <span className="mode-active-dot">✓</span>}
             </button>
           </div>
         </div>
+
+        {/* BỘ SƯU TẬP THEO TREND 2026 (KHI CHỌN PHỐI TỰ DO) */}
+        {!prioritizeWardrobe && (
+          <div className="trend-picker-section animate-fade-in">
+            <div className="trend-picker-header">
+              <label className="section-label-row">
+                <span className="label-icon">🔥</span>
+                <span>Chọn phong cách Hot Trend 2026:</span>
+                <span className="selected-value-tag">{selectedTrend?.fullName || selectedTrend?.label}</span>
+              </label>
+              <span className="trend-source-pill">🏬 Lấy đồ ngoài tủ kèm giá bán & nơi mua</span>
+            </div>
+            
+            <div className="grid-trends-picker">
+              {FASHION_TRENDS.map(trend => {
+                const isActive = selectedTrend?.id === trend.id;
+                return (
+                  <button
+                    key={trend.id}
+                    type="button"
+                    className={`trend-card-btn ${isActive ? 'active' : ''}`}
+                    onClick={() => setSelectedTrend(trend)}
+                  >
+                    <div className="trend-card-top">
+                      <span className="trend-icon">{trend.icon}</span>
+                      <span className="trend-badge-pill">{trend.badge}</span>
+                    </div>
+                    <strong className="trend-title">{trend.label}</strong>
+                    <p className="trend-desc">{trend.desc}</p>
+                    <div className={`trend-type-tag ${trend.isOnePiece ? 'one-piece' : 'two-piece'}`}>
+                      {trend.isOnePiece ? '👗 Đầm liền thân (Không cần quần)' : '👕 Phối 2 mảnh rời (Áo + Quần/Váy)'}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Action Button CTA */}
         <button
@@ -338,6 +378,22 @@ export default function StylistView({
             </div>
           </div>
 
+          {/* One-Piece Notification Banner (Khi phối đầm liền thân không cần quần) */}
+          {outfitResult.isOnePiece && (
+            <div className="one-piece-alert-banner animate-fade-in">
+              <div className="one-piece-banner-icon">👗</div>
+              <div className="one-piece-banner-content">
+                <div className="one-piece-banner-title-row">
+                  <h4>BẢN PHỐI ĐẦM LIỀN THÂN (ONE-PIECE STYLING)</h4>
+                  <span className="one-piece-badge-micro">Không cần phối quần</span>
+                </div>
+                <p>
+                  Thiết kế dáng liền tạo hiệu ứng kéo dài chiều cao tự nhiên — <strong>hệ thống tự động bỏ qua slot Quần/Váy</strong>, chỉ tập trung tối ưu <strong>Áo khoác ngoài, Giày dép & Phụ kiện</strong> đi kèm!
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* Outfit Slots List */}
           <div className="outfit-slots-container">
             <h3 className="slots-heading">Danh sách món đồ trong bản phối:</h3>
@@ -357,17 +413,37 @@ export default function StylistView({
                     <h4 className="slot-item-name">{slotItem.name}</h4>
                     <span className="slot-color-tag">Tone màu: {slotItem.color}</span>
                     <p className="slot-note-text">{slotItem.note}</p>
+                    
+                    {/* Thông tin giá và nơi mua món đồ ngoài tủ đồ */}
+                    {slotItem.isExternalTrend && (
+                      <div className="slot-meta-trend-row">
+                        {slotItem.estimatedPrice && (
+                          <span className="slot-trend-price">💰 {slotItem.estimatedPrice}</span>
+                        )}
+                        <span className="slot-trend-store">🏬 {slotItem.storeSuggestion || 'Shopee Mall'}</span>
+                      </div>
+                    )}
                   </div>
 
                   <div className="slot-status-side">
                     {slotItem.isOwned ? (
                       <span className="badge-owned-pill">
-                        <span className="check-dot">✓</span> Đã sở hữu
+                        <span className="check-dot">✓</span> Đã có trong tủ
                       </span>
                     ) : (
-                      <span className="badge-suggestion-pill">
-                        <span>✨</span> Gợi ý phối mới
-                      </span>
+                      <div className="slot-external-actions">
+                        <span className="badge-suggestion-pill">
+                          <span>{slotItem.trendBadge || '🔥 Hot Trend 2026'}</span>
+                        </span>
+                        <button
+                          type="button"
+                          className="btn-slot-buy-external"
+                          onClick={() => window.open(`https://shopee.vn/search?keyword=${encodeURIComponent(slotItem.name)}`, '_blank')}
+                          title={`Tìm mua ${slotItem.name} trên Shopee / Sàn TMĐT`}
+                        >
+                          <span>Tìm mua ngay ↗</span>
+                        </button>
+                      </div>
                     )}
                   </div>
                 </div>

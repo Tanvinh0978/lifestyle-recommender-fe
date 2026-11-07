@@ -11,7 +11,8 @@ const BACKEND_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://lifestyle-r
 export const WARDROBE_CATEGORIES = [
   { id: 'Tất cả', name: 'Tất cả', icon: '✨' },
   { id: 'Áo', name: 'Áo', icon: '👕', sub: 'Tops, sơ mi, áo thun, blazer' },
-  { id: 'Quần/Váy', name: 'Quần & Váy', icon: '👖', sub: 'Bottoms, quần âu, jeans, chân váy' },
+  { id: 'Quần/Váy', name: 'Quần & Chân váy', icon: '👖', sub: 'Bottoms, quần âu, jeans, chân váy' },
+  { id: 'Váy liền thân', name: 'Váy liền / Đầm', icon: '👗', sub: 'One-piece, đầm xòe, maxi, jumpsuit, yếm' },
   { id: 'Giày dép', name: 'Giày dép', icon: '👟', sub: 'Shoes, sneakers, loafers, cao gót' },
   { id: 'Phụ kiện', name: 'Phụ kiện', icon: '🕶️', sub: 'Accessories, túi xách, đồng hồ, khăn' }
 ];
@@ -71,6 +72,13 @@ export const CURATED_PRESETS = [
     color: 'Nâu Cà phê',
     notes: 'Mặt số mạ vàng champagne, dây da thật cao cấp',
     imageUrl: 'https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=600&auto=format&fit=crop&q=80'
+  },
+  {
+    name: 'Đầm lụa maxi hoa nhí dáng suông (One-piece Dress)',
+    category: 'Váy liền thân',
+    color: 'Be sữa',
+    notes: 'Đầm lụa tơ sống cao cấp dáng liền, tôn chiều cao tự nhiên không cần phối quần',
+    imageUrl: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=600&auto=format&fit=crop&q=80'
   }
 ];
 

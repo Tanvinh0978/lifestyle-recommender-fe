@@ -696,6 +696,20 @@ export default function WardrobeView({
                   <span className="section-hint">Tối đa 4 món cho 1 outfit</span>
                 </div>
 
+                {/* Banners thông báo nếu đang chọn đầm liền thân */}
+                {mixItems.some(i => {
+                  const cat = (i.category || '').toLowerCase();
+                  const nm = (i.name || '').toLowerCase();
+                  return cat === 'váy liền thân' || cat.includes('đầm') || cat.includes('liền') || cat.includes('maxi') || cat.includes('jumpsuit') || nm.includes('đầm') || nm.includes('váy liền');
+                }) && (
+                  <div className="mix-one-piece-helper-banner animate-fade-in">
+                    <span className="helper-icon">👗</span>
+                    <div className="helper-content">
+                      <strong>Đã chọn Váy liền thân / Đầm:</strong> Thiết kế dáng liền tự động không cần phối thêm Quần/Váy. Bạn chỉ cần chọn thêm Giày dép & Phụ kiện là đủ điều kiện đạt điểm tối đa!
+                    </div>
+                  </div>
+                )}
+
                 {wardrobe.length === 0 ? (
                   <p className="item-notes-placeholder">Tủ đồ trống. Hãy thêm món đồ trước khi phối!</p>
                 ) : (

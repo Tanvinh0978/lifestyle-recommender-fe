@@ -2548,6 +2548,253 @@ input:checked + .slider-round:before {
   border-color: rgba(139, 92, 246, 0.25);
 }
 
+/* ========================================================= */
+/* TREND PICKER & EXTERNAL ITEMS & ONE-PIECE STYLING        */
+/* ========================================================= */
+.trend-picker-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: linear-gradient(135deg, rgba(254, 242, 242, 0.6) 0%, rgba(245, 243, 255, 0.8) 100%);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+}
+
+.trend-picker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.trend-source-pill {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #B91C1C;
+  background: #FEE2E2;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+}
+
+.grid-trends-picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.trend-card-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  padding: 12px;
+  background: #FFFFFF;
+  border: 1.5px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: var(--shadow-diffuse-sm);
+}
+
+.trend-card-btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--primary);
+  box-shadow: var(--shadow-glow-amethyst);
+}
+
+.trend-card-btn.active {
+  border-color: #EF4444;
+  background: #FFF5F5;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.2);
+}
+
+.trend-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 6px;
+}
+
+.trend-icon {
+  font-size: 1.25rem;
+}
+
+.trend-badge-pill {
+  font-size: 0.65rem;
+  font-weight: 800;
+  background: #FEE2E2;
+  color: #DC2626;
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+  letter-spacing: 0.02em;
+}
+
+.trend-title {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--ink-primary);
+  margin-bottom: 2px;
+}
+
+.trend-desc {
+  font-size: 0.74rem;
+  color: var(--ink-secondary);
+  line-height: 1.35;
+  margin-bottom: 8px;
+  flex: 1;
+}
+
+.trend-type-tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.trend-type-tag.one-piece {
+  background: #F3E8FF;
+  color: #7E22CE;
+}
+
+.trend-type-tag.two-piece {
+  background: #E0E7FF;
+  color: #3730A3;
+}
+
+/* One-Piece Alert Banner */
+.one-piece-alert-banner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, rgba(243, 232, 255, 0.85) 0%, rgba(255, 255, 255, 0.95) 100%);
+  border: 1.5px solid #C084FC;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 14px rgba(168, 85, 247, 0.12);
+}
+
+.one-piece-banner-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+  background: #FFFFFF;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(168, 85, 247, 0.2);
+}
+
+.one-piece-banner-content {
+  flex: 1;
+}
+
+.one-piece-banner-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.one-piece-banner-title-row h4 {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #6B21A8;
+  margin: 0;
+}
+
+.one-piece-badge-micro {
+  font-size: 0.65rem;
+  font-weight: 800;
+  background: #6B21A8;
+  color: #FFFFFF;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+.one-piece-banner-content p {
+  font-size: 0.82rem;
+  color: #4C1D95;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Slot External Item Metadata & Quick Buy Link */
+.slot-meta-trend-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 5px;
+  flex-wrap: wrap;
+}
+
+.slot-trend-price {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #DC2626;
+  background: #FEE2E2;
+  padding: 1px 7px;
+  border-radius: 4px;
+}
+
+.slot-trend-store {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--ink-secondary);
+}
+
+.slot-external-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+}
+
+.btn-slot-buy-external {
+  padding: 4px 10px;
+  background: linear-gradient(135deg, #EE4D2D 0%, #FF6533 100%);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-full);
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(238, 77, 45, 0.25);
+  white-space: nowrap;
+}
+
+.btn-slot-buy-external:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(238, 77, 45, 0.4);
+}
+
+/* Mix Modal Helper Banner */
+.mix-one-piece-helper-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: #F3E8FF;
+  border: 1px solid #D8B4FE;
+  border-radius: var(--radius-md);
+  margin-bottom: 12px;
+}
+
+.mix-one-piece-helper-banner .helper-icon {
+  font-size: 1.4rem;
+}
+
+.mix-one-piece-helper-banner .helper-content {
+  font-size: 0.8rem;
+  color: #581C87;
+  line-height: 1.4;
+}
+
 /* ================= 7. FITNESS & NUTRITION STYLING ================= */
 .tag-personalized-badge {
   background: var(--sage-tint);

@@ -204,13 +204,24 @@ class CommunityOutfitService {
       colorScore += 0.4; // Có màu trung tính làm nền
     }
 
-    // Quy tắc cấu trúc trang phục
+    // Quy tắc cấu trúc trang phục: Nhận diện Đầm liền thân / Jumpsuit vs Phối 2 mảnh rời
+    const hasOnePiece = categories.some(c => {
+      const lower = (c || '').toLowerCase();
+      return c === 'Váy liền thân' || c === 'Váy liền / Đầm' || lower.includes('đầm') || lower.includes('liền') || lower.includes('jumpsuit') || lower.includes('yếm') || lower.includes('maxi');
+    });
     const hasTop = categories.some(c => c === 'Áo');
-    const hasBottom = categories.some(c => c === 'Quần/Váy');
+    const hasBottom = categories.some(c => c === 'Quần/Váy' || c === 'Quần' || c === 'Chân váy');
     const hasShoes = categories.some(c => c === 'Giày dép');
     const hasAcc = categories.some(c => c === 'Phụ kiện');
 
-    if (hasTop && hasBottom) propScore += 0.6;
+    if (hasOnePiece) {
+      // Đầm liền thân: Liền mạch thị giác, tôn chiều cao tự nhiên, hoàn toàn không cần quần
+      propScore += 0.8;
+      versScore += 0.3;
+    } else if (hasTop && hasBottom) {
+      // Phối 2 mảnh (Áo + Quần/Váy rời)
+      propScore += 0.6;
+    }
     if (hasShoes) propScore += 0.3;
     if (hasAcc) propScore += 0.2;
 
@@ -225,7 +236,10 @@ class CommunityOutfitService {
     let aiReview = '';
     let aiTip = '';
 
-    if (overall >= 9.0) {
+    if (hasOnePiece) {
+      aiReview = `Bản phối Đầm liền thân thanh thoát! Thiết kế dáng liền tạo hiệu ứng kéo dài cơ thể tự nhiên và liền mạch thị giác mà không cần bận tâm phối thêm quần/váy. Rất tôn dáng và sang trọng cho dịp ${contextLabel}.`;
+      aiTip = 'Với trang phục liền thân, điểm nhấn quan trọng nhất nằm ở đôi giày (sandal quai mảnh hoặc cao gót) và chiếc túi xách xách tay ton-sur-ton để hoàn thiện trọn vẹn khí chất.';
+    } else if (overall >= 9.0) {
       aiReview = `Set trang phục xuất sắc! Sự kết hợp giữa ${items.map(i => i.name).slice(0, 2).join(' và ')} mang đến tổng thể hài hòa, tôn dáng và toát lên gu thẩm mỹ tinh tế cho hoàn cảnh ${contextLabel}.`;
       aiTip = 'Điểm nhấn đã rất trọn vẹn. Bạn chỉ cần giữ phong thái tự tin và thêm hương nước hoa nhẹ nhàng là có thể thu hút mọi ánh nhìn.';
     } else if (overall >= 8.2) {

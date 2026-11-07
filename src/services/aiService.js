@@ -20,6 +20,333 @@ export const STYLIST_WEATHERS = [
   { id: 'cold_rain', label: 'Se lạnh / Mưa (18°C - 21°C)', icon: '🌧️', note: 'Áo khoác ấm, tông màu ấm áp' }
 ];
 
+// ==========================================================
+// BỘ SƯU TẬP PHỐI ĐỒ THEO TREND 2026 (PHỐI TỰ DO & ĐỒ NGOÀI)
+// Hỗ trợ cả phối đầm liền thân (không cần quần) và đồ rời
+// ==========================================================
+export const FASHION_TRENDS = [
+  {
+    id: 'quiet_luxury',
+    label: 'Quiet Luxury',
+    fullName: 'Quiet Luxury (Sang trọng thầm lặng)',
+    icon: '💎',
+    badge: 'Trending 2026',
+    desc: 'Đầm lụa liền thân tối giản thượng lưu, không cần quần',
+    isOnePiece: true,
+    outfit: {
+      title: 'The Quiet Elegance (Đầm Liền Thân Lụa Thượng Lưu)',
+      items: [
+        {
+          slot: 'Váy liền thân',
+          name: 'Đầm lụa Slip Dress dáng suông midi màu Champagne',
+          color: 'Vàng Champagne / Be sữa',
+          isOwned: false,
+          isExternalTrend: true,
+          trendBadge: '🔥 Hot Trend 2026',
+          estimatedPrice: '520.000₫',
+          storeSuggestion: 'Zara / Local Brand',
+          imageUrl: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=600&auto=format&fit=crop&q=80',
+          note: 'Chất liệu lụa rủ tự nhiên, dáng liền kéo dài tỷ lệ chân mà không cần phối thêm quần'
+        },
+        {
+          slot: 'Áo khoác phối cùng',
+          name: 'Blazer đũi dáng rộng màu trắng kem sữa',
+          color: 'Trắng kem',
+          isOwned: false,
+          isExternalTrend: true,
+          trendBadge: '🔥 Hot Trend 2026',
+          estimatedPrice: '480.000₫',
+          storeSuggestion: 'Uniqlo / Shopee Mall',
+          imageUrl: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&auto=format&fit=crop&q=80',
+          note: 'Khoác hờ trên vai tạo vẻ ngoài quyền lực nhưng vẫn phóng khoáng'
+        },
+        {
+          slot: 'Giày dép',
+          name: 'Slingback da bóng mũi nhọn gót 5cm',
+          color: 'Đen bóng / Kem',
+          isOwned: false,
+          isExternalTrend: true,
+          trendBadge: '🔥 Hot Trend 2026',
+          estimatedPrice: '390.000₫',
+          storeSuggestion: 'Charles & Keith / Shopee',
+          imageUrl: 'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=600&auto=format&fit=crop&q=80',
+          note: 'Thanh mảnh, tôn dáng cổ chân thon thả'
+        },
+        {
+          slot: 'Phụ kiện',
+          name: 'Túi kẹp nách da bò dập vân tối giản',
+          color: 'Nâu cà phê',
+          isOwned: false,
+          isExternalTrend: true,
+          trendBadge: '🔥 Hot Trend 2026',
+          estimatedPrice: '320.000₫',
+          storeSuggestion: 'Shopee Mall',
+          imageUrl: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&auto=format&fit=crop&q=80',
+          note: 'Tone màu ấm áp làm bật tổng thể sang trọng'
+        }
+      ],
+      stylingAdvice: '“Với phong cách Quiet Luxury cùng trang phục liền thân, vẻ đẹp đến từ độ rủ tinh tế của chất vải và dáng suông liền mạch. Chỉ cần khoác hờ blazer bên ngoài là bạn đã có diện mạo hoàn hảo cho cả công sở lẫn tiệc trà chiều.”',
+      harmonyScore: 98
+    }
+  },
+  {
+    id: 'resort_coastal',
+    label: 'Resort Nàng Thơ',
+    fullName: 'Resort & Nàng Thơ (Váy Liền Thân Maxi Hoa Nhí)',
+    icon: '🌸',
+    badge: 'Mùa Hè & Du Lịch',
+    desc: 'Đầm hoa nhí bồng bềnh dạo biển, thoáng mát',
+    isOnePiece: true,
+    outfit: {
+      title: 'Coastal Blossom (Đầm Liền Thân Nàng Thơ Dạo Biển)',
+      items: [
+        {
+          slot: 'Váy liền thân',
+          name: 'Đầm Maxi hai dây nhún ngực hoa nhí pastel bồng bềnh',
+          color: 'Hồng phấn / Xanh Pastel',
+          isOwned: false,
+          isExternalTrend: true,
+          trendBadge: '🔥 Hot Trend 2026',
+          estimatedPrice: '380.000₫',
+          storeSuggestion: 'Shopee Mall / Local Brand',
+          imageUrl: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=600&auto=format&fit=crop&q=80',
+          note: 'Đầm dáng liền 1 mảnh bồng bềnh, hoàn toàn không cần quần, bước đi nhẹ tênh bay bổng'
+        },
+        {
+          slot: 'Áo khoác phối cùng',
+          name: 'Cardigan dệt kim len móc mỏng chống nắng',
+          color: 'Trắng ngà',
+          isOwned: false,
+          isExternalTrend: true,
+          trendBadge: '🔥 Hot Trend 2026',
+          estimatedPrice: '230.000₫',
+          storeSuggestion: 'Shopee Mall',
+          imageUrl: 'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=600&auto=format&fit=crop&q=80',
+          note: 'Khoác nhẹ che bắp tay khi ra nắng hoặc dạo gió chiều biển'
+        },
+        {
+          slot: 'Giày dép',
+          name: 'Sandal bệt quai mảnh đan dây La Mã',
+          color: 'Nâu bò / Be',
+          isOwned: false,
+          isExternalTrend: true,
+          trendBadge: '🔥 Hot Trend 2026',
+          estimatedPrice: '260.000₫',
+          storeSuggestion: 'Shopee Mall',
+          imageUrl: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600&auto=format&fit=crop&q=80',
+          note: 'Thoáng mát, tiện đi dạo cát hoặc chụp ảnh sống ảo'
+        },
+        {
+          slot: 'Phụ kiện',
+          name: 'Mũ cói rộng vành đính nơ lụa & Túi cói dạo biển',
+          color: 'Màu cói tự nhiên',
+          isOwned: false,
+          isExternalTrend: true,
+          trendBadge: '🔥 Hot Trend 2026',
+          estimatedPrice: '190.000₫',
+          storeSuggestion: 'Shopee Mall',
+          imageUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop&q=80',
+          note: 'Bộ đôi phụ kiện cói bất hủ cho mọi bức ảnh du lịch nghìn like'
+        }
+      ],
+      stylingAdvice: '“Váy liền thân maxi tôn vinh nét nữ tính tự nhiên mà cực kỳ thoải mái vì không bị gò bó. Hãy mix cùng son bóng cam đào và hoa tai ngọc trai nhỏ.”',
+      harmonyScore: 99
+    }
+  },
+  {
+    id: 'clean_girl',
+    label: 'Clean Girl',
+    fullName: 'Clean Girl (Thanh lịch & Tối giản Hiện Đại)',
+    icon: '🫧',
+    badge: 'Viral TikTok',
+    desc: 'Áo gân Tank top & Quần suông cạp cao phóng khoáng',
+    isOnePiece: false,
+    outfit: {
+      title: 'Pure Aesthetic (Clean Girl Hiện Đại)',
+      items: [
+        {
+          slot: 'Áo chính',
+          name: 'Áo gân Ribbed Tank Top cổ vuông trắng',
+          color: 'Trắng tinh khôi',
+          isOwned: false,
+          isExternalTrend: true,
+          trendBadge: '🔥 Hot Trend 2026',
+          estimatedPrice: '185.000₫',
+          storeSuggestion: 'Uniqlo / Shopee Mall',
+          imageUrl: 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=600&auto=format&fit=crop&q=80',
+          note: 'Vải cotton gân ôm sát nhẹ, khoe xương quai xanh thanh tú'
+        },
+        {
+          slot: 'Quần / Váy',
+          name: 'Quần âu ống suông cạp cao xếp ly vải tuyết mưa',
+          color: 'Be sữa / Vàng bơ',
+          isOwned: false,
+          isExternalTrend: true,
+          trendBadge: '🔥 Hot Trend 2026',
+          estimatedPrice: '320.000₫',
+          storeSuggestion: 'Local Brand / Shopee',
+          imageUrl: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=600&auto=format&fit=crop&q=80',
+          note: 'Cạp cao che khuyết điểm bụng dưới, kéo dài chân tối đa'
+        },
+        {
+          slot: 'Giày dép',
+          name: 'Sneaker trắng da trơn Samba / Court retro',
+          color: 'Trắng kem',
+          isOwned: false,
+          isExternalTrend: true,
+          trendBadge: '🔥 Hot Trend 2026',
+          estimatedPrice: '650.000₫',
+          storeSuggestion: 'Adidas / Shopee Mall',
+          imageUrl: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&auto=format&fit=crop&q=80',
+          note: 'Năng động, di chuyển thoải mái cả ngày'
+        },
+        {
+          slot: 'Phụ kiện',
+          name: 'Kính râm gọng Oval kim loại vàng & Túi canvas',
+          color: 'Vàng kim / Kem',
+          isOwned: false,
+          isExternalTrend: true,
+          trendBadge: '🔥 Hot Trend 2026',
+          estimatedPrice: '160.000₫',
+          storeSuggestion: 'Shopee Mall',
+          imageUrl: 'https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=600&auto=format&fit=crop&q=80',
+          note: 'Cặp kính mắt retro tạo thần thái chuẩn Clean Girl'
+        }
+      ],
+      stylingAdvice: '“Bí quyết của Clean Girl là sự gọn gàng: tóc búi củ tỏi thấp (slicked bun), khuyên tai tròn nhỏ màu vàng và đôi sneaker trắng không tì vết.”',
+      harmonyScore: 97
+    }
+  },
+  {
+    id: 'korean_chic',
+    label: 'Korean Chic',
+    fullName: 'Korean Chic (Phố Hàn Trẻ Trung)',
+    icon: '✨',
+    badge: 'K-Drama Style',
+    desc: 'Sơ mi kẻ sọc oversized & Quần jeans ống suông',
+    isOnePiece: false,
+    outfit: {
+      title: 'Seoul Minimalist (Chuẩn Phong Cách Hàn Quốc)',
+      items: [
+        {
+          slot: 'Áo chính',
+          name: 'Áo sơ mi dáng rộng kẻ sọc xanh pastel (Poplin Shirt)',
+          color: 'Xanh Pastel',
+          isOwned: false,
+          isExternalTrend: true,
+          trendBadge: '🔥 Hot Trend 2026',
+          estimatedPrice: '290.000₫',
+          storeSuggestion: 'Shopee Mall / Zara',
+          imageUrl: 'https://images.unsplash.com/photo-1598033129183-c4f50c736f10?w=600&auto=format&fit=crop&q=80',
+          note: 'Phom rộng phóng khoáng, mở 2 cúc cổ tạo cảm giác thoải mái'
+        },
+        {
+          slot: 'Quần / Váy',
+          name: 'Quần Jeans ống đứng cạp cao wash xanh cổ điển',
+          color: 'Xanh Jeans nhạt',
+          isOwned: false,
+          isExternalTrend: true,
+          trendBadge: '🔥 Hot Trend 2026',
+          estimatedPrice: '360.000₫',
+          storeSuggestion: 'Shopee Mall',
+          imageUrl: 'https://images.unsplash.com/photo-1542272604-780c96856592?w=600&auto=format&fit=crop&q=80',
+          note: 'Dáng đứng thẳng tôn chân thon gọn'
+        },
+        {
+          slot: 'Giày dép',
+          name: 'Giày Mule hở gót da mềm mũi vuông',
+          color: 'Be kem',
+          isOwned: false,
+          isExternalTrend: true,
+          trendBadge: '🔥 Hot Trend 2026',
+          estimatedPrice: '310.000₫',
+          storeSuggestion: 'Shopee Mall',
+          imageUrl: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600&auto=format&fit=crop&q=80',
+          note: 'Xỏ vào nhanh chóng, êm ái khi đi bộ'
+        },
+        {
+          slot: 'Phụ kiện',
+          name: 'Túi đeo chéo nắp gập tối giản (Crossbody Bag)',
+          color: 'Đen nhám',
+          isOwned: false,
+          isExternalTrend: true,
+          trendBadge: '🔥 Hot Trend 2026',
+          estimatedPrice: '270.000₫',
+          storeSuggestion: 'Shopee Mall',
+          imageUrl: 'https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=600&auto=format&fit=crop&q=80',
+          note: 'Tiện dụng đựng điện thoại, son và ví tiền'
+        }
+      ],
+      stylingAdvice: '“Kỹ thuật cắm thùng một bên vạt sơ mi (half-tuck) là bí quyết thời trang của các bạn trẻ Seoul giúp tạo độ phóng khoáng bất đối xứng cực chất.”',
+      harmonyScore: 96
+    }
+  },
+  {
+    id: 'glamour_party',
+    label: 'Dạ Hội & Tiệc Đêm',
+    fullName: 'Glamour Night (Đầm Liền Thân Dạ Hội Quyến Rũ)',
+    icon: '🥂',
+    badge: 'Dạ Tiệc & Gala',
+    desc: 'Đầm ôm body xẻ tà quyến rũ, không cần quần',
+    isOnePiece: true,
+    outfit: {
+      title: 'Nightfall Starlight (Đầm Liền Thân Dạ Tiệc Quyến Rũ)',
+      items: [
+        {
+          slot: 'Váy liền thân',
+          name: 'Đầm Bodycon cổ yếm liền thân xẻ tà quyến rũ',
+          color: 'Đen tuyền / Đỏ rượu vang',
+          isOwned: false,
+          isExternalTrend: true,
+          trendBadge: '🔥 Hot Trend 2026',
+          estimatedPrice: '580.000₫',
+          storeSuggestion: 'Zara / Shopee Mall',
+          imageUrl: 'https://images.unsplash.com/photo-1566174053879-31528523f8ae?w=600&auto=format&fit=crop&q=80',
+          note: 'Thiết kế liền thân tôn đường cong chữ S hoàn hảo, không cần thêm quần/chân váy'
+        },
+        {
+          slot: 'Áo khoác phối cùng',
+          name: 'Khăn choàng lụa voan mỏng viền kim tuyến',
+          color: 'Đen ánh nhũ / Bạc',
+          isOwned: false,
+          isExternalTrend: true,
+          trendBadge: '🔥 Hot Trend 2026',
+          estimatedPrice: '210.000₫',
+          storeSuggestion: 'Shopee Mall',
+          imageUrl: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&auto=format&fit=crop&q=80',
+          note: 'Khoác nhẹ qua tay tăng vẻ kiêu sa đài các dưới ánh đèn tiệc'
+        },
+        {
+          slot: 'Giày dép',
+          name: 'Giày cao gót quai mảnh Stiletto gót 7cm',
+          color: 'Bạc ánh kim / Đen',
+          isOwned: false,
+          isExternalTrend: true,
+          trendBadge: '🔥 Hot Trend 2026',
+          estimatedPrice: '450.000₫',
+          storeSuggestion: 'Shopee Mall',
+          imageUrl: 'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=600&auto=format&fit=crop&q=80',
+          note: 'Kéo dài đôi chân, tạo dáng đi kiêu hãnh'
+        },
+        {
+          slot: 'Phụ kiện',
+          name: 'Ví cầm tay Clutch ánh bạc đính đá pha lê',
+          color: 'Ánh bạc',
+          isOwned: false,
+          isExternalTrend: true,
+          trendBadge: '🔥 Hot Trend 2026',
+          estimatedPrice: '340.000₫',
+          storeSuggestion: 'Shopee Mall',
+          imageUrl: 'https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=600&auto=format&fit=crop&q=80',
+          note: 'Bắt sáng lấp lánh dưới ánh đèn dạ tiệc'
+        }
+      ],
+      stylingAdvice: '“Đầm liền thân xẻ tà là nữ hoàng của các buổi tiệc đêm. Hãy tô son đỏ lạnh rượu vang và búi tóc cao để khoe trọn chiếc cổ thiên nga cùng đôi hoa tai lấp lánh.”',
+      harmonyScore: 98
+    }
+  }
+];
+
 export const NUTRITION_GOALS = [
   { id: 'fat_loss', label: 'Giảm mỡ & Siết dáng', icon: '🔥', desc: 'Thâm hụt calo, bảo toàn cơ bắp' },
   { id: 'muscle_gain', label: 'Tăng cơ nạc', icon: '💪', desc: 'Giàu đạm chất lượng cao, thặng dư nhẹ' },
@@ -80,7 +407,7 @@ class AIService {
   /**
    * Sinh gợi ý phối đồ AI Stylist
    */
-  async generateOutfit({ occasion, weather, prioritizeWardrobe, wardrobeItems, userGender = 'Nữ' }) {
+  async generateOutfit({ occasion, weather, prioritizeWardrobe, wardrobeItems, userGender = 'Nữ', selectedTrend = null }) {
     // 1. Thử gọi backend nếu có
     try {
       const response = await fetch(`${BACKEND_BASE_URL}/recommend-outfit`, {
@@ -91,12 +418,13 @@ class AIService {
           occasion: occasion.label,
           weather: weather.label,
           onlyUseWardrobe: prioritizeWardrobe,
+          selectedTrend: selectedTrend?.id || selectedTrend,
           wardrobeItems
         })
       });
       const resData = await response.json();
       if (resData.success && resData.data) {
-        return this._adaptBackendOutfit(resData.data, { occasion, weather, wardrobeItems });
+        return this._adaptBackendOutfit(resData.data, { occasion, weather, wardrobeItems, selectedTrend });
       }
     } catch {
       // Backend offline -> chuyển sang hệ thống AI Fallback cục bộ
@@ -105,7 +433,7 @@ class AIService {
     // 2. Fallback AI generator mô phỏng chuẩn xác ngữ cảnh và tủ đồ cá nhân
     await new Promise(resolve => setTimeout(resolve, 800)); // Nhịp thở UX chân thực
 
-    return this._generateSimulatedOutfit({ occasion, weather, prioritizeWardrobe, wardrobeItems, userGender });
+    return this._generateSimulatedOutfit({ occasion, weather, prioritizeWardrobe, wardrobeItems, userGender, selectedTrend });
   }
 
   /**
@@ -300,13 +628,129 @@ class AIService {
   // ==========================================
   // BỘ TẠO DỮ LIỆU MÔ PHỎNG NỘI ĐỊA HÓA CAO CẤP
   // ==========================================
-  _generateSimulatedOutfit({ occasion, weather, _prioritizeWardrobe, wardrobeItems }) {
-    // Tìm các món đồ phù hợp trong tủ đồ nếu người dùng có
+  _generateSimulatedOutfit({ occasion, weather, prioritizeWardrobe, wardrobeItems = [], selectedTrend = null }) {
+    // -------------------------------------------------------------
+    // CHẾ ĐỘ 1: PHỐI TỰ DO THEO XU HƯỚNG MỚI (LẤY ĐỒ BÊN NGOÀI & HOT TREND 2026)
+    // -------------------------------------------------------------
+    if (!prioritizeWardrobe) {
+      let trend = FASHION_TRENDS.find(t => t.id === selectedTrend?.id || t.id === selectedTrend);
+      if (!trend) {
+        if (occasion.id === 'party') {
+          trend = FASHION_TRENDS.find(t => t.id === 'glamour_party') || FASHION_TRENDS[0];
+        } else if (occasion.id === 'date') {
+          trend = FASHION_TRENDS.find(t => t.id === 'resort_coastal') || FASHION_TRENDS[0];
+        } else if (occasion.id === 'work') {
+          trend = FASHION_TRENDS.find(t => t.id === 'quiet_luxury') || FASHION_TRENDS[0];
+        } else {
+          trend = FASHION_TRENDS.find(t => t.id === 'clean_girl') || FASHION_TRENDS[0];
+        }
+      }
+
+      const outfitData = trend.outfit;
+      return {
+        title: `${outfitData.title}`,
+        occasion: occasion.label,
+        weather: weather.label,
+        harmonyScore: outfitData.harmonyScore || 98,
+        isOnePiece: !!trend.isOnePiece,
+        trendId: trend.id,
+        trendName: trend.label,
+        trendBadge: trend.badge,
+        items: outfitData.items,
+        missingSuggestion: {
+          name: trend.isOnePiece ? 'Khuyên tai ngọc trai tự nhiên hoặc Dây chuyền mảnh' : 'Kính râm gọng kim loại retro',
+          category: 'Phụ kiện',
+          estimatedPrice: '189.000₫',
+          storeSuggestion: 'Shopee Mall / Local Brand',
+          reason: 'Món đồ giúp hoàn thiện đường nét khuôn mặt và thần thái cuốn hút.'
+        },
+        stylingAdvice: outfitData.stylingAdvice,
+        isSimulated: true,
+        source: `AI Trend Forecast 2026 (${trend.fullName})`
+      };
+    }
+
+    // -------------------------------------------------------------
+    // CHẾ ĐỘ 2: PHỐI TỪ TỦ ĐỒ CỦA BẠN (ƯU TIÊN ĐỒ SẴN CÓ)
+    // Xử lý thông minh: Nếu có Đầm/Váy liền thân -> KHÔNG CẦN QUẦN!
+    // -------------------------------------------------------------
+    const ownedOnePiece = wardrobeItems.find(i => {
+      const cat = (i.category || '').toLowerCase();
+      const nm = (i.name || '').toLowerCase();
+      return cat === 'váy liền thân' || cat.includes('đầm') || cat.includes('liền') || cat.includes('maxi') || cat.includes('jumpsuit') || nm.includes('đầm') || nm.includes('váy liền') || nm.includes('jumpsuit');
+    });
+
     const ownedTop = wardrobeItems.find(i => i.category === 'Áo');
-    const ownedBottom = wardrobeItems.find(i => i.category === 'Quần/Váy');
+    const ownedBottom = wardrobeItems.find(i => i.category === 'Quần/Váy' || i.category === 'Quần' || i.category === 'Chân váy');
     const ownedShoes = wardrobeItems.find(i => i.category === 'Giày dép');
     const ownedAccessory = wardrobeItems.find(i => i.category === 'Phụ kiện');
 
+    // Nếu người dùng có váy liền thân và hoàn cảnh tiệc/hẹn hò (hoặc tủ đồ không đủ cả áo lẫn quần) -> Tự động phối Đầm liền thân
+    const preferOnePiece = ownedOnePiece && (occasion.id === 'party' || occasion.id === 'date' || (!ownedTop && !ownedBottom) || !ownedBottom);
+
+    if (preferOnePiece) {
+      const items = [
+        {
+          slot: 'Váy liền thân',
+          name: ownedOnePiece.name,
+          color: ownedOnePiece.color || 'Tone thanh nhã',
+          isOwned: true,
+          imageUrl: ownedOnePiece.imageUrl || 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=600&auto=format&fit=crop&q=80',
+          note: 'Trang phục dáng liền 1 mảnh tôn dáng tự nhiên — không cần phối thêm quần/váy!'
+        },
+        {
+          slot: 'Áo khoác phối cùng',
+          name: ownedTop && (ownedTop.name.toLowerCase().includes('blazer') || ownedTop.name.toLowerCase().includes('khoác') || ownedTop.name.toLowerCase().includes('cardigan'))
+            ? ownedTop.name 
+            : 'Blazer mỏng hoặc Cardigan len dệt kim mỏng nhẹ',
+          color: ownedTop ? ownedTop.color : 'Trắng kem / Be sữa',
+          isOwned: !!(ownedTop && (ownedTop.name.toLowerCase().includes('blazer') || ownedTop.name.toLowerCase().includes('khoác'))),
+          isExternalTrend: !(ownedTop && (ownedTop.name.toLowerCase().includes('blazer') || ownedTop.name.toLowerCase().includes('khoác'))),
+          trendBadge: '🔥 Gợi ý phối kèm',
+          estimatedPrice: '380.000₫',
+          storeSuggestion: 'Uniqlo / Shopee Mall',
+          imageUrl: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=500&auto=format&fit=crop&q=80',
+          note: 'Khoác hờ trên vai giữ ấm nhẹ và tăng độ sang trọng cho chiếc đầm'
+        },
+        {
+          slot: 'Giày dép',
+          name: ownedShoes ? ownedShoes.name : 'Loafers da trơn màu kem sữa đế 3cm',
+          color: ownedShoes ? ownedShoes.color : 'Kem / Be',
+          isOwned: !!ownedShoes,
+          imageUrl: ownedShoes ? ownedShoes.imageUrl : 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=500&auto=format&fit=crop&q=80',
+          note: ownedShoes ? 'Đã có sẵn trong tủ đồ của bạn' : 'Giúp đôi chân trông dài và thanh thoát hơn'
+        },
+        {
+          slot: 'Phụ kiện',
+          name: ownedAccessory ? ownedAccessory.name : 'Túi xách da kẹp nách baguette tone nâu cà phê',
+          color: ownedAccessory ? ownedAccessory.color : 'Nâu cà phê',
+          isOwned: !!ownedAccessory,
+          imageUrl: ownedAccessory ? ownedAccessory.imageUrl : 'https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=500&auto=format&fit=crop&q=80',
+          note: ownedAccessory ? 'Đã có sẵn trong tủ đồ' : 'Điểm nhấn tone ấm hoàn thiện set đồ'
+        }
+      ];
+
+      return {
+        title: `The Seamless One-Piece (Bản Phối Đầm Liền Thân: ${ownedOnePiece.name})`,
+        occasion: occasion.label,
+        weather: weather.label,
+        harmonyScore: 98,
+        isOnePiece: true,
+        items,
+        missingSuggestion: {
+          name: 'Khăn lụa vuông thắt nơ hoặc Vòng cổ ngọc trai mảnh',
+          category: 'Phụ kiện',
+          estimatedPrice: '145.000₫',
+          storeSuggestion: 'Shopee Mall',
+          reason: 'Điểm xuyết nhẹ nhàng ở cổ áo giúp chiếc đầm thêm phần nổi bật.'
+        },
+        stylingAdvice: `“Váy liền thân là giải pháp thông minh tuyệt đối vì bạn hoàn toàn không cần lo lắng về việc phối quần/váy sao cho ăn khớp. Hãy tập trung vào tỷ lệ thắt eo và chọn đôi giày cùng tone màu để đôi chân dài miên man!”`,
+        isSimulated: true,
+        source: 'Mô phỏng AI Stylist Chuẩn Phong Cách'
+      };
+    }
+
+    // NẾU LÀ PHỐI 2 MẢNH RỜI (ÁO CHÍNH + QUẦN/VÁY)
     let outfitTitle = 'The Soft Minimalist (Nhã nhặn & Tinh khôi)';
     let harmonyScore = 96;
 
@@ -375,6 +819,7 @@ class AIService {
       occasion: occasion.label,
       weather: weather.label,
       harmonyScore,
+      isOnePiece: false,
       items,
       missingSuggestion,
       stylingAdvice,
